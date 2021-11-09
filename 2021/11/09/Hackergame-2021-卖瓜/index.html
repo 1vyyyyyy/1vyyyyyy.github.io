@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Hackergame 2021 卖瓜 | Bl0g 8y 1vyyyyyy</title><meta name="author" content="1vyyyyyy"><meta name="copyright" content="1vyyyyyy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、题目题干描述的比较奇怪，看到浮点数也不知道是什么意思，没见过这种题型 点进去看  题目的意思是让我们用6和9构造出20，但是很容易看出来，6s+9t &#x3D; 20这个方程是没有整数解的，因为20不是3的倍数 这里正常方法肯定是不行的，估计会有骚操作 二、解题F12检查元素  试试把 min 的值改为负数，提交了一个负数上去  后台不认，那么肯定是有检测机制的 再试试输入小数  小数也不行  我做出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hackergame 2021 卖瓜">
+<meta property="og:url" content="http://example.com/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/index.html">
+<meta property="og:site_name" content="Bl0g 8y 1vyyyyyy">
+<meta property="og:description" content="一、题目题干描述的比较奇怪，看到浮点数也不知道是什么意思，没见过这种题型 点进去看  题目的意思是让我们用6和9构造出20，但是很容易看出来，6s+9t &#x3D; 20这个方程是没有整数解的，因为20不是3的倍数 这里正常方法肯定是不行的，估计会有骚操作 二、解题F12检查元素  试试把 min 的值改为负数，提交了一个负数上去  后台不认，那么肯定是有检测机制的 再试试输入小数  小数也不行  我做出">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg">
+<meta property="article:published_time" content="2021-11-09T03:01:54.000Z">
+<meta property="article:modified_time" content="2021-11-09T03:13:37.496Z">
+<meta property="article:author" content="1vyyyyyy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hackergame 2021 卖瓜',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-11-09 11:13:37'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/iu.gif" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">3</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/%E5%B0%81%E9%9D%A2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Bl0g 8y 1vyyyyyy</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Hackergame 2021 卖瓜</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2021-11-09T03:01:54.000Z" title="Created 2021-11-09 11:01:54">2021-11-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2021-11-09T03:13:37.496Z" title="Updated 2021-11-09 11:13:37">2021-11-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Hackergame 2021 卖瓜"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="一、题目"><a href="#一、题目" class="headerlink" title="一、题目"></a>一、题目</h2><p><img src="/%E5%8D%96%E7%93%9C/1.png"><br>题干描述的比较奇怪，看到浮点数也不知道是什么意思，没见过这种题型</p>
+<p>点进去看<br><img src="/%E5%8D%96%E7%93%9C/2.png"></p>
+<p> 题目的意思是让我们用6和9构造出20，但是很容易看出来，6s+9t = 20这个方程是没有整数解的，因为20不是3的倍数</p>
+<p>这里正常方法肯定是不行的，估计会有骚操作</p>
+<h2 id="二、解题"><a href="#二、解题" class="headerlink" title="二、解题"></a>二、解题</h2><p>F12检查元素<br><img src="/%E5%8D%96%E7%93%9C/3.png"></p>
+<p> 试试把 min 的值改为负数，提交了一个负数上去<br><img src="/%E5%8D%96%E7%93%9C/4.png"></p>
+<p> 后台不认，那么肯定是有检测机制的</p>
+<p>再试试输入小数<br><img src="/%E5%8D%96%E7%93%9C/5.png"></p>
+<p> 小数也不行</p>
+<p> 我做出这题的灵感来源于室友，他告诉我，当在9斤的瓜那里输一个很大的数时，提交上去会变成一个负数，如下：<br><img src="/%E5%8D%96%E7%93%9C/6.png"></p>
+<p> 而这个负数其实非常特殊，因为它正好是long long int 的最小值</p>
+<p>正常情况下是不可能出现负数的</p>
+<p>也就是说，我们如果输入一个很大的值，会造成溢出，这个地方就可以做工作了<br><img src="/%E5%8D%96%E7%93%9C/7.png"></p>
+<p>用这个-9223372036854775808除以9，将得到的数取整输入进去，不会造成溢出，但是将这个数再+1就会造成溢出了，对6同理</p>
+<p>我们选择用9乘以大数造成溢出，再用6加回来，直到6s+9t = 20-(-得到的负数)有整数解<br><img src="/%E5%8D%96%E7%93%9C/8.png"></p>
+<p> 直接操作</p>
+<h3 id="第一步：9乘大数溢出"><a href="#第一步：9乘大数溢出" class="headerlink" title="第一步：9乘大数溢出"></a>第一步：9乘大数溢出</h3><p><img src="/%E5%8D%96%E7%93%9C/9.png"></p>
+<h3 id="第二步：6乘那个上面在计算器得到的取整后的数"><a href="#第二步：6乘那个上面在计算器得到的取整后的数" class="headerlink" title="第二步：6乘那个上面在计算器得到的取整后的数"></a>第二步：6乘那个上面在计算器得到的取整后的数</h3><p><img src="/%E5%8D%96%E7%93%9C/10.png"></p>
+<p>得到-2了，那么下一次可以选择构造出-4，或者用6再梅开二度</p>
+<h3 id="第三步：6梅开二度"><a href="#第三步：6梅开二度" class="headerlink" title="第三步：6梅开二度"></a>第三步：6梅开二度</h3><p><img src="/%E5%8D%96%E7%93%9C/11.png"></p>
+<p>可以看到这里再减去一个 9223372036854775808时，就刚刚好会出现-4，也就是我们需要的24</p>
+<h3 id="第四步：9乘以大数溢出出"><a href="#第四步：9乘以大数溢出出" class="headerlink" title="第四步：9乘以大数溢出出"></a>第四步：9乘以大数溢出出</h3><p><img src="/%E5%8D%96%E7%93%9C/12.png"></p>
+<h3 id="第五步：6-4加回去补上-4"><a href="#第五步：6-4加回去补上-4" class="headerlink" title="第五步：6*4加回去补上-4"></a>第五步：6*4加回去补上-4</h3><p><img src="/%E5%8D%96%E7%93%9C/13.png"></p>
+<p> 拿到flag</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><ol>
+<li><p>这种题型确实挺新奇的，不过尝试的次数会很多很多，我在寝室里骂了出题人一个下午</p>
+</li>
+<li><p>实际上这题对猜后台代码的能力有一定要求，看看官方给出的wp</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function action()</span><br><span class="line">&#123;</span><br><span class="line">    check_last_action();</span><br><span class="line">    $bottle_6 = intval($_POST[&#x27;b6&#x27;]);</span><br><span class="line">    $bottle_9 = intval($_POST[&#x27;b9&#x27;]);</span><br><span class="line">    if ($bottle_6 &lt; 0 || $bottle_9 &lt; 0) &#123;</span><br><span class="line">        die(&#x27;操作无效：不能放负数个瓜。点击&lt;a href=&quot;/&quot;&gt;这里&lt;/a&gt;回到主页。&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    $_SESSION[&#x27;pool&#x27;] += intval($bottle_6 * 6 + $bottle_9 * 9);</span><br><span class="line">    header(&#x27;Location: /&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>根据 PHP 文档 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/language.types.integer.php">Integer 整型</a>，PHP 在运算结果超出 int 范围时，会返回 float 类型，进一步使用函数 intval() 来把 float 转为 int 时，如果这个 float 超出了 int 范围（定义在 PHP_INT_MAX），结果是未定义的，在其评论中有一条 Be aware of float to int cast overflow 列举了一些溢出后的转换结果，选手也可以自己尝试。在尝试的过程中，只要能产生一个模 3 余 2 的重量（如 2, -1 等）都可以很容易凑到 20。</p>
+</blockquote>
+<p>其实我在试的时候是出现了科学计数法表示的大数，当时想着通过这个来突破，但是也不行，一加回去又变成0了，后来看到官方wp后才知道，一旦这个数小于-9223372036854775808，就会变成后台定义的科学计数法表示，这是个坑</p>
+<ol start="3">
+<li>果然是中科大，能想到个出这种题，不过也不算纯web，多少是沾点数论和编程了</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">1vyyyyyy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/">http://example.com/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/%E5%B0%81%E9%9D%A2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/09/%E7%AE%80%E4%BB%8B/"><img class="prev-cover" src="/img/%E5%B0%81%E9%9D%A2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">简介</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/09/Hackergame-2021-Flag%E5%8A%A9%E5%8A%9B%E5%A4%A7%E7%BA%A2%E5%8C%85/"><img class="next-cover" src="/img/%E5%B0%81%E9%9D%A2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Hackergame 2021 Flag助力大红包</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/iu.gif" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">1vyyyyyy</div><div class="author-info__description">blog</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">3</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%A2%98%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">一、题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%A7%A3%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">二、解题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A9%E4%B9%98%E5%A4%A7%E6%95%B0%E6%BA%A2%E5%87%BA"><span class="toc-number">2.1.</span> <span class="toc-text">第一步：9乘大数溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A6%E4%B9%98%E9%82%A3%E4%B8%AA%E4%B8%8A%E9%9D%A2%E5%9C%A8%E8%AE%A1%E7%AE%97%E5%99%A8%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%96%E6%95%B4%E5%90%8E%E7%9A%84%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">第二步：6乘那个上面在计算器得到的取整后的数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A6%E6%A2%85%E5%BC%80%E4%BA%8C%E5%BA%A6"><span class="toc-number">2.3.</span> <span class="toc-text">第三步：6梅开二度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A9%E4%B9%98%E4%BB%A5%E5%A4%A7%E6%95%B0%E6%BA%A2%E5%87%BA%E5%87%BA"><span class="toc-number">2.4.</span> <span class="toc-text">第四步：9乘以大数溢出出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A6-4%E5%8A%A0%E5%9B%9E%E5%8E%BB%E8%A1%A5%E4%B8%8A-4"><span class="toc-number">2.5.</span> <span class="toc-text">第五步：6*4加回去补上-4</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">三、总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/09/%E7%AE%80%E4%BB%8B/" title="简介">简介</a><time datetime="2021-11-09T03:10:54.000Z" title="Created 2021-11-09 11:10:54">2021-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/" title="Hackergame 2021 卖瓜">Hackergame 2021 卖瓜</a><time datetime="2021-11-09T03:01:54.000Z" title="Created 2021-11-09 11:01:54">2021-11-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/09/Hackergame-2021-Flag%E5%8A%A9%E5%8A%9B%E5%A4%A7%E7%BA%A2%E5%8C%85/" title="Hackergame 2021 Flag助力大红包">Hackergame 2021 Flag助力大红包</a><time datetime="2021-11-09T02:52:27.000Z" title="Created 2021-11-09 10:52:27">2021-11-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 1vyyyyyy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
