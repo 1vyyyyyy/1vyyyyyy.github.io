@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>RSA算法的数论基础 | Bl0g 8y 1vyyyyyy</title><meta name="author" content="1vyyyyyy"><meta name="copyright" content="1vyyyyyy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、参考书目《数论与密码》-杨思熳 主编《密码学与网络安全》-(美) Behrouz A.Forouzan 著 马振晗 贾军保译 二、概述RSA密码体制是在1978年，由麻省理工的三位科学家Rivest,Shamir,Adleman基于素性检测和整数分解提出的第一个实用公钥密码体制，计算时取两个大素数p和q，计算n&#x3D;p*q，将加密和解密建立在对模n的运算之上。而根据p,q求n并不难，但将n进行素因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RSA算法的数论基础">
+<meta property="og:url" content="http://example.com/2022/01/02/RSA%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Bl0g 8y 1vyyyyyy">
+<meta property="og:description" content="一、参考书目《数论与密码》-杨思熳 主编《密码学与网络安全》-(美) Behrouz A.Forouzan 著 马振晗 贾军保译 二、概述RSA密码体制是在1978年，由麻省理工的三位科学家Rivest,Shamir,Adleman基于素性检测和整数分解提出的第一个实用公钥密码体制，计算时取两个大素数p和q，计算n&#x3D;p*q，将加密和解密建立在对模n的运算之上。而根据p,q求n并不难，但将n进行素因">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg">
+<meta property="article:published_time" content="2022-01-02T03:56:16.000Z">
+<meta property="article:modified_time" content="2022-01-02T04:46:07.930Z">
+<meta property="article:author" content="1vyyyyyy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2022/01/02/RSA%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RSA算法的数论基础',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-02 12:46:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/iu.gif" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/%E5%B0%81%E9%9D%A2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Bl0g 8y 1vyyyyyy</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RSA算法的数论基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-01-02T03:56:16.000Z" title="Created 2022-01-02 11:56:16">2022-01-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-01-02T04:46:07.930Z" title="Updated 2022-01-02 12:46:07">2022-01-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="RSA算法的数论基础"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="一、参考书目"><a href="#一、参考书目" class="headerlink" title="一、参考书目"></a>一、参考书目</h2><p>《数论与密码》-杨思熳 主编<br>《密码学与网络安全》-(美) Behrouz A.Forouzan 著 马振晗 贾军保译</p>
+<h2 id="二、概述"><a href="#二、概述" class="headerlink" title="二、概述"></a>二、概述</h2><p>RSA密码体制是在1978年，由麻省理工的三位科学家Rivest,Shamir,Adleman基于素性检测和整数分解提出的第一个实用公钥密码体制，计算时取两个大素数p和q，计算n=p*q，将加密和解密建立在对模n的运算之上。而根据p,q求n并不难，但将n进行素因子分解的难度很大，这就是RSA安全性的依赖之处。</p>
+<h2 id="三、算法分析"><a href="#三、算法分析" class="headerlink" title="三、算法分析"></a>三、算法分析</h2><h4 id="①大素数p和q的选择：p-q都应较大且值不易接近"><a href="#①大素数p和q的选择：p-q都应较大且值不易接近" class="headerlink" title="①大素数p和q的选择：p,q都应较大且值不易接近"></a>①大素数p和q的选择：p,q都应较大且值不易接近</h4><p>第一个是选择p,q的大小问题，如果有人想要攻击RSA算法，那么当n比较小时，他就可以在一定时间内用计算机将其素因子分解出来得到p,q，故理所当然，选的越大越好，目前比较安全的选择是512比特，即约2的512次方</p>
+<p>当下，对于素性检测问题最好的判定算法运行时间是，其关于输入长度log n 呈超越多项式速度增长；同时对于整数因子分解问题，分解一个一般整数n的最好算法运行时间是O(exp(c(log n)^(1/3) (log log n)^(2/3)))，其关于输入长度log n 呈亚指数速度增长。当由p,q生成的n足够大时（带有多项式时间复杂度），这两个问题是难以解决的，因此比较安全。<br>另一个问题是p,q取值之差，我这里起初的想法是：采用暴力分解的话，若是找到p,q其中之一，就能根据这个值来枚举附近的一些质数，可能被破解。后面询问了一番打CTF的同学，这里是因为将n开根号后，就可以往两个方向寻找质数，若相差不大，则p,q都很容易被找到，同时这也是一种破解的方法。</p>
+<h4 id="②φ-n-p-1-q-1-：欧拉函数"><a href="#②φ-n-p-1-q-1-：欧拉函数" class="headerlink" title="②φ(n)=(p-1)*(q-1)：欧拉函数"></a>②φ(n)=(p-1)*(q-1)：欧拉函数</h4><p>欧拉函数的值为小于n的自然数中与n互质的个数，很明显，对于一个素数而言，其欧拉函数值为n-1。当n为两个大素数相乘之积时，n只有一种分解方法即n=p<em>q，这是因为p和q都不能进一步拿出质因子，而试图分解p,q也需要较大运算量，此时不与n互质的数有两类，一是p</em>i (1=&lt;i&lt;=(q-1))，二是q<em>j (1&lt;=j&lt;=(p-1))，<br>下面先证明这两类数的集合没有交集：<br>假设存在相等的两个数，不妨令p</em>i=q<em>j，因为p与q互质，故必有：p|j或这q|i，又因为i&lt;=q-1,j&lt;=p-1，这两个都不可能成立，假设错误。<br>所以这两类数的集合没有交集，那么根据容斥原理，不与n互质的数一共有：p</em>q-1-(p-1)-(q-1)=(p-1)<em>(q-1)个，故φ(n)=φ(p</em>q)=(p-1)*(q-1)=φ(p)φ(q)。</p>
+<h4 id="③e的选择与求公钥d"><a href="#③e的选择与求公钥d" class="headerlink" title="③e的选择与求公钥d"></a>③e的选择与求公钥d</h4><p>e应当随机选择在(1,φ(n))之间与φ(n)互素的数，这之后进行求逆操作，即e<em>d≡1 mod n，此时要用到欧几里得除法，举个例子：<br>n=77=7</em>11,φ(n)=(7-1)<em>(11-1)=60，我们从中选择e=13，现在求13</em>d≡1 mod 60,根据欧几里得除法，<br>60=4<em>13+8；<br>13=1</em>8+5；<br>8=1<em>5+3；<br>5=1</em>3+2；<br>3=1<em>2+1；那么<br>1=3-2=3-（5-3）<br>=3</em>2-5=2<em>（8-5）-5<br>=2</em>8-3<em>5=2</em>8-3<em>（13-8）<br>=5</em>8-3<em>13=5</em>（60-4<em>13）-3</em>13<br>=5<em>60-23</em>13=5<em>60-（60-37）</em>13<br>=37<em>13-8</em>60<br>37*13≡1 mod 60；<br>可得d=37满足条件<br>如今对于e的选择，大部分时候会选择3，17，65537（2^16+1），因为3、17或65537分别只需要2或17次模乘运算，而一个随机选择的e(假设n是1024-bit)则大约需要1000次模乘运算。这种方法刻意把公钥指数选的小一点，其对应私钥指数就会很大，这么做的目的是节约公钥运算的时间。因为正常使用中都是用公钥加密，所以需要节约大部分人的时间，而极少部分人也会选用私钥解密，那么就只能少数服从多数。</p>
+<h4 id="④公钥、私钥及加解密"><a href="#④公钥、私钥及加解密" class="headerlink" title="④公钥、私钥及加解密"></a>④公钥、私钥及加解密</h4><p>上述运算完成后，设置公钥为(n,e)，私钥为(n,d)，另外p，q都必须保密.<br>我们对明文x的选择，要求其长度大于1而小于117字节，这是因为在把明文送给RSA加密器前，要确认这个值是不是大于n，也就是如果接近n位长，那么需要先padding再分段加密，在RSA中padding也参与加密，128最大字节数减去padding的11字节就是117个字节。<br>下面对上述的例子进行加解密检验：<br>选择明文x 为 5，它满足条件x在(1,n)之间（不考虑padding的情况下），则对其加密的过程为：<br>C=x^e mod n=5^13 mod 77≡26 mod 77<br>这时要用到模重复平方算法：<br>设m=77,b=13,a=1,13=2^3+2^2+2^0，写成二进制形式，若该二进制形式中有2^i这一项，则n[i]=1，反之n[i]=0<br>n[0]=1,a0=a<em>b≡13,b1=b^2≡169 mod 77≡15 mod 77<br>n[1]=0,a1=a0</em>b1≡195 mod 77≡41 mod 77,b2=b1^2≡225 mod 77≡-6 mod 77<br>以此类推，最终得到a3≡26 mod 77即为所得结果。<br>任何知道公钥的人都可以对符合规范的明文进行加密，但解密过程只能由私钥保存者进行，可以看出，得到的C最大值为n-1，必然满足规定。<br>P=C^d mod n=26^37 mod 77≡5 mod 77=x<br>这样解密得到的明文和原始明文一样，下面将对该过程进行证明</p>
+<h4 id="⑤加密-解密互逆的证明"><a href="#⑤加密-解密互逆的证明" class="headerlink" title="⑤加密/解密互逆的证明"></a>⑤加密/解密互逆的证明</h4><p>由e<em>d≡1 mod φ(n),故e</em>d = t<em>φ(n)+1<br>现对整数段明文x分情况讨论<br>(a)若（x,n）=1，则有：<br>        (x^e)^d=x^(t</em>φ(n)+1) mod n<br>               =(x^φ(n))^t * x mod n<br>               =(1^t) * x mod n    (欧拉定理)<br>               =x mod n<br>(b)若(x,n)≠1，不妨设p|x,q |/ x，则有：<br>(x^e)^d = 0 mod p<br>(x^e)^d = x mod q<br>(x^e)^d = x mod p*q = x mod n<br>x^e mod n后为密文，再d次方之后为解密过程，原始明文=解密后得到的明文，故得证</p>
+<h2 id="四、算法安全性的数论分析"><a href="#四、算法安全性的数论分析" class="headerlink" title="四、算法安全性的数论分析"></a>四、算法安全性的数论分析</h2><h4 id="①因数分解攻击"><a href="#①因数分解攻击" class="headerlink" title="①因数分解攻击"></a>①因数分解攻击</h4><p>当下RSA基于的想法就是在模n足够大的情况下，在适当的时间内将其分解是不可能的，或者说即使最终分解出来了，但是这一次的信息传输因为时间过去太久而失效或者过期，相当于徒劳无功。<br>目前要求n必须大于300个十进制数位，那么模最小就是1024比特，刚刚在对p,q的选择讨论中已经提到过，如今的因数分解算法还没有能分解带有多项式时间复杂度的大整数的，就算用世界上最快的计算机，还要进行素性检测等操作，其花费的时间同样也不可想象。</p>
+<h4 id="②选择密文攻击"><a href="#②选择密文攻击" class="headerlink" title="②选择密文攻击"></a>②选择密文攻击</h4><p>假设私钥保存者能为其他人的任意密文解密，而攻击者拦截到了密文C (=P^e mod n),随后随机选择一个整数X，计算Y=C*(X^e) mod n，再将Y发送给私钥保存者，经解密操作后得到Z=Y^d mod n，那么攻击者就可以根据如下过程得到明文P：<br>Z=Y^d mod n=(C^d)<em>(X^(e</em>d)) mod n ≡(C^d)<em>X mod n ，<br>这里是根据欧拉定理：<br>a^(k</em>φ(n)+1) ≡ a mod n<br>ed = k<em>φ(n)+1<br>继续证明：<br>(C^d)<em>X mod n=(P</em>X) mod n<br>故P=Z</em>X^(-1) mod n,运用欧几里得除法求X的乘法逆就可以求得P<br>选择密文攻击较难实现，一种情形是密码分析者临时获得解密机器的访问权，但解密密钥被安全嵌入在设备中无法得到，此时可以通过解密大量选择的密文，利用产生的明文来推测密钥。（百度百科）</p>
+<h4 id="③广播攻击（低加密指数）"><a href="#③广播攻击（低加密指数）" class="headerlink" title="③广播攻击（低加密指数）"></a>③广播攻击（低加密指数）</h4><p>在选取e=3时，如果明文P过小以至于x^3&lt;n，发送者使用相同的e进行了3次发送<br>C1=P^3 mod n1,C2=P^3 mod n2,C3=P^3 mod n3<br>运用中国剩余定理，可以得到<br>C’= P^3 mod n1<em>n2</em>n3,之后开三次方就可以求得明文P</p>
+<h4 id="④共模攻击"><a href="#④共模攻击" class="headerlink" title="④共模攻击"></a>④共模攻击</h4><p>如果使用了相同的模n对相同的明文m进行了加密，且已知各条密文，那么就可以在不分解n的情况下还原出明文m的值。(e1和e2互质)</p>
+<p>此时有：<br>e1<em>s1+e2</em>s2 = 1<br>式中s1、s2为一正一负的整数<br>通过扩展欧几里德算法，我们可以得到该式子的一组解（s1,s2），假设s1为正数,s2为负数.<br>因为<br>c1 = m^e1 mod n c2 = m^e2 mod n<br>所以<br>(c1^s1<em>c2^s2) mod n = ((m^e1)^s1</em>(m^e2)^s2) mod n<br>即<br>(c1^s1<em>c2^s2) mod n = (m^(e1^s1+e2^s2)) mod n<br>又因<br>e1</em>s1+e2<em>s2 = 1<br>所以<br>(c1^s1</em>c2^s2) mod n = (m^(1)) mod n<br>即<br>c1^s1*c2^s2 ≡ m mod n<br>得到明文m</p>
+<h4 id="⑤私钥d泄露后果"><a href="#⑤私钥d泄露后果" class="headerlink" title="⑤私钥d泄露后果"></a>⑤私钥d泄露后果</h4><p>易知e<em>d ≡ 1 mod φ(n)，那么一旦d泄露，相当于暴露了φ(n)，而n是公钥的一部分，那么就可以跟据n-φ(n)=p</em>q-(p-1)*(q-1)=p+q-1，相当于把破解过程转化为加减法，这时就很容易被破解了。<br>当d泄露时，私钥管理者应该重新生成p,q,n,e以保证在传输信息的有效期内不会被破解，这样保证了信息的安全性。</p>
+<h2 id="五、个人感悟"><a href="#五、个人感悟" class="headerlink" title="五、个人感悟"></a>五、个人感悟</h2><p>1.RSA算法在加解密和签名验签两个方向上，都是互逆的运算过程，这其中的数论基础主要是欧拉定理<br>2.在使用RSA的过程中，φ(n)、d、p、q中任意一个甚至多个泄露出来都会有很大风险，因此如今在用到RSA的地方，公钥私钥刷新的速度都较快，毕竟加密总比解密简单，就算最后被解密出来了，只要消息过期了就没有用，所以在没有出现更高速有效的解密方法之前，RSA算法都是安全的<br>3.同上，RSA安全性依赖的是对大整数质因子分解的困难性，一旦n在有效时间内无法被分解出来，那么它就是绝对安全的加密算法</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">1vyyyyyy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2022/01/02/RSA%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">http://example.com/2022/01/02/RSA%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/%E5%B0%81%E9%9D%A2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/01/02/AES%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/"><img class="prev-cover" src="/img/%E5%B0%81%E9%9D%A2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">AES算法的数论基础</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/12/BUU-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-EasySQL/"><img class="next-cover" src="/img/%E5%B0%81%E9%9D%A2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">BUU [极客大挑战 2019] EasySQL</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/iu.gif" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">1vyyyyyy</div><div class="author-info__description">blog</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%8F%82%E8%80%83%E4%B9%A6%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">一、参考书目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">二、概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">三、算法分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A0%E5%A4%A7%E7%B4%A0%E6%95%B0p%E5%92%8Cq%E7%9A%84%E9%80%89%E6%8B%A9%EF%BC%9Ap-q%E9%83%BD%E5%BA%94%E8%BE%83%E5%A4%A7%E4%B8%94%E5%80%BC%E4%B8%8D%E6%98%93%E6%8E%A5%E8%BF%91"><span class="toc-number">3.0.1.</span> <span class="toc-text">①大素数p和q的选择：p,q都应较大且值不易接近</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A1%CF%86-n-p-1-q-1-%EF%BC%9A%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0"><span class="toc-number">3.0.2.</span> <span class="toc-text">②φ(n)&#x3D;(p-1)*(q-1)：欧拉函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A2e%E7%9A%84%E9%80%89%E6%8B%A9%E4%B8%8E%E6%B1%82%E5%85%AC%E9%92%A5d"><span class="toc-number">3.0.3.</span> <span class="toc-text">③e的选择与求公钥d</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A3%E5%85%AC%E9%92%A5%E3%80%81%E7%A7%81%E9%92%A5%E5%8F%8A%E5%8A%A0%E8%A7%A3%E5%AF%86"><span class="toc-number">3.0.4.</span> <span class="toc-text">④公钥、私钥及加解密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A4%E5%8A%A0%E5%AF%86-%E8%A7%A3%E5%AF%86%E4%BA%92%E9%80%86%E7%9A%84%E8%AF%81%E6%98%8E"><span class="toc-number">3.0.5.</span> <span class="toc-text">⑤加密&#x2F;解密互逆的证明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%AE%97%E6%B3%95%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E6%95%B0%E8%AE%BA%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">四、算法安全性的数论分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A0%E5%9B%A0%E6%95%B0%E5%88%86%E8%A7%A3%E6%94%BB%E5%87%BB"><span class="toc-number">4.0.1.</span> <span class="toc-text">①因数分解攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A1%E9%80%89%E6%8B%A9%E5%AF%86%E6%96%87%E6%94%BB%E5%87%BB"><span class="toc-number">4.0.2.</span> <span class="toc-text">②选择密文攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A2%E5%B9%BF%E6%92%AD%E6%94%BB%E5%87%BB%EF%BC%88%E4%BD%8E%E5%8A%A0%E5%AF%86%E6%8C%87%E6%95%B0%EF%BC%89"><span class="toc-number">4.0.3.</span> <span class="toc-text">③广播攻击（低加密指数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A3%E5%85%B1%E6%A8%A1%E6%94%BB%E5%87%BB"><span class="toc-number">4.0.4.</span> <span class="toc-text">④共模攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A4%E7%A7%81%E9%92%A5d%E6%B3%84%E9%9C%B2%E5%90%8E%E6%9E%9C"><span class="toc-number">4.0.5.</span> <span class="toc-text">⑤私钥d泄露后果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%AA%E4%BA%BA%E6%84%9F%E6%82%9F"><span class="toc-number">5.</span> <span class="toc-text">五、个人感悟</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/01/02/AES%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/" title="AES算法的数论基础">AES算法的数论基础</a><time datetime="2022-01-02T04:11:47.000Z" title="Created 2022-01-02 12:11:47">2022-01-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/01/02/RSA%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/" title="RSA算法的数论基础">RSA算法的数论基础</a><time datetime="2022-01-02T03:56:16.000Z" title="Created 2022-01-02 11:56:16">2022-01-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/12/BUU-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019-EasySQL/" title="BUU [极客大挑战 2019] EasySQL">BUU [极客大挑战 2019] EasySQL</a><time datetime="2021-11-12T06:00:22.000Z" title="Created 2021-11-12 14:00:22">2021-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/12/BUU-HCTF-2018-WarmUp/" title="BUU [HCTF 2018]WarmUp">BUU [HCTF 2018]WarmUp</a><time datetime="2021-11-12T05:35:06.000Z" title="Created 2021-11-12 13:35:06">2021-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/09/Hackergame-2021-%E5%8D%96%E7%93%9C/" title="Hackergame 2021 卖瓜">Hackergame 2021 卖瓜</a><time datetime="2021-11-09T03:01:54.000Z" title="Created 2021-11-09 11:01:54">2021-11-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 1vyyyyyy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
