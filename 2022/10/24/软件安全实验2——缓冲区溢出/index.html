@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>软件安全实验2——缓冲区溢出 | Bl0g 8y 1vyyyyyy</title><meta name="author" content="1vyyyyyy"><meta name="copyright" content="1vyyyyyy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="实验二：缓冲区溢出一、目标(1) 通过对程序输入的密码的长度、内容等修改用Ollydbg来验证缓冲区溢出的发生 (2) 完成淹没相邻变量改变程序流程实验 (3) 完成淹没返回地址改变程序流程实验 二、测试步骤与结果1.overflow_var.cpp相邻变量覆盖先在编译器里面看一下源代码 {width&#x3D;”5.763194444444444in”height&#x3D;”5.779861111111111in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件安全实验2——缓冲区溢出">
+<meta property="og:url" content="http://example.com/2022/10/24/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C2%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/index.html">
+<meta property="og:site_name" content="Bl0g 8y 1vyyyyyy">
+<meta property="og:description" content="实验二：缓冲区溢出一、目标(1) 通过对程序输入的密码的长度、内容等修改用Ollydbg来验证缓冲区溢出的发生 (2) 完成淹没相邻变量改变程序流程实验 (3) 完成淹没返回地址改变程序流程实验 二、测试步骤与结果1.overflow_var.cpp相邻变量覆盖先在编译器里面看一下源代码 {width&#x3D;”5.763194444444444in”height&#x3D;”5.779861111111111in">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg">
+<meta property="article:published_time" content="2022-10-24T07:18:28.000Z">
+<meta property="article:modified_time" content="2022-10-24T07:19:50.812Z">
+<meta property="article:author" content="1vyyyyyy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/%E5%B0%81%E9%9D%A2.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2022/10/24/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C2%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '软件安全实验2——缓冲区溢出',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-24 15:19:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/iu.gif" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/%E5%B0%81%E9%9D%A2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Bl0g 8y 1vyyyyyy</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">软件安全实验2——缓冲区溢出</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-10-24T07:18:28.000Z" title="Created 2022-10-24 15:18:28">2022-10-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-10-24T07:19:50.812Z" title="Updated 2022-10-24 15:19:50">2022-10-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="软件安全实验2——缓冲区溢出"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="实验二：缓冲区溢出"><a href="#实验二：缓冲区溢出" class="headerlink" title="实验二：缓冲区溢出"></a>实验二：缓冲区溢出</h1><h2 id="一、目标"><a href="#一、目标" class="headerlink" title="一、目标"></a>一、目标</h2><p>(1) 通过对程序输入的密码的长度、内容等修改用Ollydbg来验证缓冲区溢出的发生</p>
+<p>(2) 完成淹没相邻变量改变程序流程实验</p>
+<p>(3) 完成淹没返回地址改变程序流程实验</p>
+<h2 id="二、测试步骤与结果"><a href="#二、测试步骤与结果" class="headerlink" title="二、测试步骤与结果"></a>二、测试步骤与结果</h2><h3 id="1-overflow-var-cpp相邻变量覆盖"><a href="#1-overflow-var-cpp相邻变量覆盖" class="headerlink" title="1.overflow_var.cpp相邻变量覆盖"></a>1.overflow_var.cpp相邻变量覆盖</h3><p>先在编译器里面看一下源代码</p>
+<p><img src="/ruanan2/image1.png" alt="bedfd3b4ea761313cf7b7a9c7780ca7">{width=”5.763194444444444in”<br>height=”5.779861111111111in”}</p>
+<p>程序的大致流程是，用户输入一个字符串password，然后通过调用子函数verify_password对其值进行验证，如果验证通过则输出Congratulations，暂停程序，反之输出Incorrect，继续循环。</p>
+<p>这里main函数中赋给password的空间是1024，在子函数中另声明了一个变量buffer，其大小为8，而在对其赋值时使用的函数是strcpy，这个函数在进行复制时不会对复制长度进行检查，即当password的长度超出其数组规定范围时会造成溢出。</p>
+<p>在IDA里面查看一下变量的各位置</p>
+<p><img src="/ruanan2/image2.png" alt="f6ebc7b0437abe1dbf06292d36f093f">{width=”4.175in”<br>height=”1.6333333333333333in”}</p>
+<p>这是反编译之后对应的verify_password函数，变量Destination对应的是buffer，v3对应的是authenticated，前者距离ebp的位置是0xC个字节，后者距离是0x4个字节，而buffer的大小为8个字节，于是这两个变量的存储在空间上紧挨，同时对v3的直接赋值是在strcpy函数调用之前，因此可以利用strcpy的性质可以构造溢出，使得v3的值变成我们通过验证所需要的0（strcmp的返回值为0时证明这两个字符串相等，另有分析在之后）。</p>
+<p>动态调试一下这个程序，从汇编层面上进行分析，由于我们事先确定了溢出点在verify_password里面，只用看这里面的细节就行</p>
+<p><img src="/ruanan2/image3.png" alt="123848b80d706aa1fb8de7311a2d717">{width=”6.271527777777778in”<br>height=”3.9659722222222222in”}</p>
+<p>观察参数的情况，可以确定00401051处调用的函数是strcmp，00401064处调用的函数是strcpy，00401077处调用的函数是chkesp（这个是在IDA里面反编译看到的，当我们输入非常长的字符串进去时就会通过这个函数报错，此处无关，故省略）</p>
+<p>输入111看一下寄存器情况</p>
+<p><img src="/ruanan2/image4.png" alt="a0d9adb9476a23ce6d744b076fd55cc">{width=”6.334722222222222in”<br>height=”1.5819444444444444in”}</p>
+<p>根据汇编代码，strcmp的返回值存储在eax里面，当程序运行至0040105C处时eax的值被赋给了local.1这个变量，因此可以初步确定local.1就是authenticated，同时观察到eax此时的值为0xFFFFFFFF，即int类型的-1（strcmp函数实质上是用第一个参数逐位的ASCII码值来减第二个参数，返回值定性地表示两者大小，111和1234567比较时，由于第二位上1的码值比2小，因此返回-1）</p>
+<p><img src="/ruanan2/image5.png" alt="4a4796dfe86940ec36a31f6834a355b">{width=”2.75in”<br>height=”0.9583333333333334in”}</p>
+<p>锁定堆栈后运行至strcpy，在输入111之后，字符串就按照ASCII码值保存在0019FB2C这个位置，而buffer的位置是在0019FAC8这里</p>
+<p><img src="/ruanan2/image6.png" alt="c88e3595366633c8a4d16f29d247474">{width=”6.579861111111111in”<br>height=”3.140277777777778in”}</p>
+<p>可以推断，0019FAC8-0019FACC这里的8个字节是属于buffer的空间，而0019FAD0这里的四个字节是strcmp的返回值即authenticated，下面进行验证</p>
+<p>现输入222，在同样的位置进行查看</p>
+<p><img src="/ruanan2/image7.png" alt="8610c55cb9b44863240e560f6730a35">{width=”6.601388888888889in”<br>height=”3.5444444444444443in”}</p>
+<p>strcmp的返回值1被存储在了0019FAD0处，上面的32是2的ASCII码值</p>
+<p>于是我们可以初步确定溢出方案，即将buffer的8个字节填满之后，构造一个使得0019FAD0处的值为0的输入</p>
+<p>我们输入8个a，在0019FB2C处可以看到存储的情况，最后是跟了一个截断字符</p>
+<p><img src="/ruanan2/image8.png" alt="60143cd55342129f1bfe4b23fd0f8ea">{width=”2.4916666666666667in”<br>height=”1.1270833333333334in”}</p>
+<p>单步跟进，运行至strcpy</p>
+<p><img src="/ruanan2/image9.png" alt="229b75becd2f7da10d51bf646b4bbb2">{width=”6.773611111111111in”<br>height=”3.546527777777778in”}</p>
+<p>这里看到0019FAC8被填满，然后0019FAD0处的值为0，满足了验证通过的条件</p>
+<p><img src="/ruanan2/image10.png" alt="7fa84e407057bee55488534273a77a9">{width=”6.3180555555555555in”<br>height=”1.5208333333333333in”}</p>
+<p>我们再测试一下其他的字符，如ZZZZZZZZ这些都能通过测试</p>
+<p><img src="/ruanan2/image11.png" alt="dbc7a99c783779d673f6b8feb3a53e1">{width=”6.266666666666667in”<br>height=”3.0034722222222223in”}</p>
+<p>然而奇怪的事情发生了，当我输入11111111，00000000时</p>
+<p><img src="/ruanan2/image12.png" alt="8c31ea657bb1f64fa96c13cbd0d9f9e">{width=”2.2583333333333333in”<br>height=”0.9416666666666667in”}</p>
+<p>如图，其结果只会覆盖一个0xFF字节，最终结果自然是不通过，然后我又测试了一些其他特殊的字符串，比如((((((((，########时情况相似，且我发现，这些字符串共同的特点是第一个字符的ASCII码值小于等于31（对应1），然而输入2*******等等却可以绕过，再来看看长度有没有什么影响</p>
+<p>这次我们输入222222222</p>
+<p><img src="/ruanan2/image13.png" alt="4994e0a41d6d418d230911467ebf8c8">{width=”2.425in”<br>height=”0.95in”}</p>
+<p>第9个字符会以ASCII码值的形式溢出到authenticated的地方，而码值为0的字符在C的控制台里面是不能输入的，因此当字符串长度大于8时，虽然能实现了溢出，但是却并没有实际效果</p>
+<p>综上，我们在这里利用strcpy漏洞构造溢出的条件为：输入的字符串长度=8，且第一个字符的ASCII码值&gt;31</p>
+<p>到这一步还是要简单探究一下原因蛤，造成溢出的字符串按理来说只需要长度满足要求就行，然而这里却跟ASCII码的大小扯上关系了，这不禁让我想起了之前调用的函数strcmp，它的实质是对两个字符串的每个字符逐位做减法，于是可以步入这个函数来看一下是哪里出了问题</p>
+<p>输入11111111</p>
+<p><img src="/ruanan2/image14.png" alt="7455fd66eff9c1a8a3fccfef634cff2">{width=”6.5472222222222225in”<br>height=”3.497916666666667in”}</p>
+<p>在00401368这一步时，堆栈中0019FAD0处的值由0xFFFFFFFF变为了0xFFFFFF00，也就是说，原本strcmp的返回值-1在此处变为了-256</p>
+<p>输入22222222</p>
+<p><img src="/ruanan2/image15.png" alt="0b29c9570c27ce29b44cc84d2e59068">{width=”6.522222222222222in”<br>height=”3.5930555555555554in”}</p>
+<p>观察到在同样的地方，strcmp的值由1变为了0</p>
+<p>经过查询，发现在做减法过程中存在借位的过程，汇编指令在004013B4处</p>
+<p><img src="/ruanan2/image16.png" alt="0adcfb47c55efa0c3676c039da62445">{width=”6.810416666666667in”<br>height=”1.4583333333333333in”}</p>
+<p>在作比较时，较小数减去较大数需要借位，因此只能在eax之前的数里面借，于是本来的结果应该为0xFFFFFFFF，按照字符的单位来进位就是0xFF+0x01=0x00，同时产生进位</p>
+<h3 id="2-Overflow-ret-cpp返回地址覆盖"><a href="#2-Overflow-ret-cpp返回地址覆盖" class="headerlink" title="2.Overflow_ret.cpp返回地址覆盖"></a>2.Overflow_ret.cpp返回地址覆盖</h3><p>先在编译器里看一下源码</p>
+<p><img src="/ruanan2/image17.png" alt="8137b002c7d58c2fadae25ffd1dd451">{width=”5.633333333333334in”<br>height=”5.075in”}</p>
+<p>这个程序跟刚才的半斤八两，区别在于这里的password是通过读取文件来进行赋值，因此在控制台中不能直接输入的一些字符，可以将txt拖到winhex中进行编码，就可以构造特殊地址了，等会儿甚至可以弥补第一个实验的遗憾。</p>
+<p>用OD打开程序，我们的任务是构造恶意字符以覆盖到返回地址，即要让verify_password函数返回时绕过验证，直接输出Congratulations。</p>
+<p>先在password.txt里面输1111111</p>
+<p><img src="/ruanan2/image18.png" alt="a79efd91a75bbb1d2fff524205d75a1">{width=”2.091666666666667in”<br>height=”1.4770833333333333in”}</p>
+<p>动态调试，单步运行</p>
+<p><img src="/ruanan2/image19.png" alt="a7b1a57654a76768211e0a1185cb3cc">{width=”6.518055555555556in”<br>height=”3.282638888888889in”}</p>
+<p>这里我就简要说明了，程序运行完chkesp这个函数需要平衡堆栈，使得ESP指向的地址与程序最开始要ret2的地址一样，即保证返回不会出错。观察到0019FAD4处是存储着esp指向的返回地址的，因此我们需要刚好把溢出的值覆盖到0019FAD4-0019FAD8处，否则多或少都会使得地址无效，程序闪退。</p>
+<p>在上一部分覆盖变量的实验中已经提到，0019FAC4-0019FAC8是buffer的空间，因此其他的不用管，计算得出需要构造的字节数=0019FAD4-0019FAC4=0x10即16个字节，其余的四个字节就构造返回地址即可。</p>
+<p>查到输出Congratulations的函数地址为00401134，但是不能直接跳转到这里，还需要给其参数赋值，即地址0040112F</p>
+<p><img src="/ruanan2/image20.png" alt="f8e7c01b6a2b3f6c53476c600bb3119">{width=”5.970833333333333in”<br>height=”0.7159722222222222in”}</p>
+<p>payload如下：</p>
+<p><img src="/ruanan2/image21.png" alt="7239934c8e1220625dd47e6653d9d12">{width=”6.209722222222222in”<br>height=”0.8048611111111111in”}</p>
+<p>前16个字节我是构造的1，后面四个字节根据数据栈的性质，需要将shell地址的顺序倒转过来，写入ret的地址。运行程序，验证一下。</p>
+<p><img src="/ruanan2/image22.png" alt="952a9a4979a15965bf5ac0111ab9482">{width=”6.763888888888889in”<br>height=”3.845833333333333in”}</p>
+<p>可以看到，这里0019FAD4的值是直接被覆盖为了0040112F，而其之前的16个字节都是1，同时可以看到00401060处的操作是将local.3<br>的值赋给了EDX，观察寄存器，EDX中的值也是0040112F</p>
+<p>运行至retn处</p>
+<p><img src="/ruanan2/image23.png" alt="9bd783c7ec70286d691e08850d4d098">{width=”5.7625in”<br>height=”1.4819444444444445in”}</p>
+<p>可以看到这里return的地址就是输出Congratulations的地址</p>
+<p><img src="/ruanan2/image24.png" alt="d7f798c7319616ea500ce568f832bdd">{width=”6.08125in”<br>height=”3.498611111111111in”}</p>
+<p>根据这个覆盖返回地址的想法，我又再次回到了第一个程序中</p>
+<p>我尝试仿照输入刚才txt中构造的那个字符串</p>
+<p><img src="/ruanan2/image25.png" alt="c9d230559b07676179c6c1c1e25b4d5">{width=”6.055555555555555in”<br>height=”0.5465277777777777in”}</p>
+<p>可以看到这里的shellcode地址是00401116，构造字符串如下</p>
+<p><img src="/ruanan2/image26.png" alt="5d3f18ec6096a18afa98337cbf55074">{width=”6.200694444444444in”<br>height=”0.9388888888888889in”}</p>
+<p><img src="/ruanan2/image27.png" alt="069fa04e8723a38692c088a9e16aab6">{width=”6.204861111111111in”<br>height=”2.5194444444444444in”}</p>
+<p>我比较好奇的是这里的0x00字符实际上是并不能直接通过键盘输入到终端里面去的，于是我又把最后的一个字节换成了0x10字符</p>
+<p><img src="/ruanan2/image28.png" alt="e659f0c4a9bda06cd3b6ed57c3e6a9b">{width=”5.764583333333333in”<br>height=”2.022222222222222in”}</p>
+<p>可以看到这里retn的地址也变化了，说明我们复制粘贴进去的0x00字符有效</p>
+<h2 id="三、测试结论"><a href="#三、测试结论" class="headerlink" title="三、测试结论"></a>三、测试结论</h2><ol>
+<li><p>在进行邻近变量覆盖时，理论上来说是可以直接把authenticated的值覆盖为0，但<br> 由于0x00这个字符无法直接输入，因此只能通过在OD里面修改堆栈中的值或者借<br> 助其他函数的性质，如strcmp来构造恶意输入。</p>
+</li>
+<li><p>在进行返回地址覆盖时，对于该程序而言shellcode就是输出Congratulations的指令，<br> 且正好表示地址的字节可以被转码为utf-8，能够在控制台直接输入，然而对于其他<br> 程序而言，其shellcode有可能是诸如system(‘/bin/sh’)这样的关键命令，同时返回地<br> 址的指针是存储在ESP寄存器中的，在返回main函数之前需要进行平衡堆栈的操作，<br> 在C程序中起到了保护作用，然而若是输入的地址刚好完全覆盖了ESP，则不会产<br> 生堆栈的问题。</p>
+</li>
+<li><p>实际上在main函数中也存在一些看似可以注入的点，譬如scanf，对于valid_flag和<br> password这两个变量而言，它们在堆栈上也是邻近的两个变量，存在覆盖的可能性，<br> 然而这里存在一个while<br> 1的永真循环，password大小为1024，可能会直接覆盖这 个while<br> 1的相关区域，造成意想不到的后果，另外，对valid_flag的赋值是在调用<br> scanf之后，因此只要构造长度大于1024的字符串，strcmp的结果都不会正确，就<br> 算溢出成功了也没有实际效果。</p>
+<p> 另附修改原理图示：</p>
+<p> 图一.相邻变量覆盖</p>
+<p> <img src="/ruanan2/image29.png" alt="var">{width=”4.455555555555556in”<br> height=”6.645833333333333in”}</p>
+<p> 图二.返回地址覆盖</p>
+<p> <img src="/ruanan2/image30.png" alt="原图">{width=”4.589583333333334in”<br> height=”6.845833333333333in”}</p>
+</li>
+</ol>
+<h2 id="四、附加题"><a href="#四、附加题" class="headerlink" title="四、附加题"></a>四、附加题</h2><p>StackOverrun.exe动态调试</p>
+<h3 id="a-PE文件被加载到内存中时，地址的大致变化情况如下"><a href="#a-PE文件被加载到内存中时，地址的大致变化情况如下" class="headerlink" title="a)  PE文件被加载到内存中时，地址的大致变化情况如下"></a>a)  PE文件被加载到内存中时，地址的大致变化情况如下</h3><p>第一步是在004010EB处创建SE处理程序，即Structured<br>Exception，是程序运行需要用到的一些结构指针，下一部分是程序在引入动态链接库，如00401107处kernel32.GetVersion这一步是在获取系统版本，00401155处的GetCommandLineA这一步是在获得指向当前程序及参数缓冲区的一个指针，这些步骤都是在程序运行其功能之前所做的准备工作。</p>
+<p><img src="/ruanan2/image31.png" alt="73e7f7f2685cbb5141dc0718eac1695">{width=”6.804166666666666in”<br>height=”4.413888888888889in”}</p>
+<p><img src="/ruanan2/image32.png" alt="e319020d923a7eb377a4ea11ef2b663">{width=”6.807638888888889in”<br>height=”3.44375in”}</p>
+<p>第二步是进入到main函数中</p>
+<p><img src="/ruanan2/image33.png" alt="9158095ef6f0ef00c3b3db8f92d78c7">{width=”6.552777777777778in”<br>height=”2.202777777777778in”}</p>
+<p>可见main函数的入口地址为00401070，接下来0040107A和00401089两处调用是对字符串进行打印，参数分别是foo函数和bar函数的入口地址（foo函数即main函数），于是可以直接判断004010B0处的函数是printf</p>
+<p><img src="/ruanan2/image34.png" alt="52ea0a7940159248894e3f5e411a476">{width=”4.659027777777778in”<br>height=”1.7041666666666666in”}</p>
+<p>第三步是调用了00401000处的子函数，我们跳转过去看看，这个函数有一个参数</p>
+<p><img src="/ruanan2/image35.png" alt="e09873031e49bf390b8acdc05f4ea2a">{width=”6.860416666666667in”<br>height=”4.617361111111111in”}</p>
+<p>这里先是调用了printf函数，参数为edi和esi，这两个寄存器的作用是存储变址，主要用于mov指令的操作中，这里可以理解为打印了堆栈的数据，接下来看IDA的情况</p>
+<p><img src="/ruanan2/image36.png" alt="7b6a4b1b5be7787a1a5d31cab8fe869">{width=”5.125in”<br>height=”1.2in”}</p>
+<p>00401000处的函数有一个参数argv[1]，可以理解为系统参数，即那个我们通过命令行运行时额外输入的参数，比如StackOverRun.exe<br>1111，那么1111就是这里的argv[1]。这个函数当中，堆栈的信息先后被两次打印，0040100A和0040103E两处间的操作是在寄存器之间进行各种二进制操作，我们暂时无法具体得知其进行的操作</p>
+<p><img src="/ruanan2/image37.png" alt="98cb20ddd4463f4be8def19cdb6879e">{width=”6.634722222222222in”<br>height=”2.9291666666666667in”}</p>
+<p>这里我们单步跟进，在不添加系统参数的时候只会打印一次堆栈信息，0040101C处就会直接终止运行</p>
+<p>尝试添加一个参数111</p>
+<p><img src="/ruanan2/image38.png" alt="cce9a78e3600170b6860083d39a87c1">{width=”6.270138888888889in”<br>height=”3.2743055555555554in”}</p>
+<p>这里注意到输入的111按照ASCII码的形式存储在堆栈中了，于是可以推测之前那些在寄存器之间复杂的运算操作是根据输入的字符串值来计算堆栈变化</p>
+<p>我们再来分析一下从main函数到sub_401000()函数的跳转过程中，esp，ebp，eip这些寄存器中的值变化<img src="/ruanan2/image39.png" alt="d2b8775501b874e725ba2e861dc8785">{width=”6.932638888888889in”<br>height=”1.2944444444444445in”}</p>
+<p>在调用之前，esp=0019FF20，即输入的字符串111，<img src="/ruanan2/image40.png" alt="d71af1b4a23c095ce123d79b4d50901">{width=”5.0625in”<br>height=”0.7916666666666666in”}</p>
+<p>ebp=0019FF70，这是一个连续的间接存址，一直跳转到00000000，但是本来ebp是其内存放一个指针，该指针指向系统栈最上面一个栈帧的底部</p>
+<p><img src="/ruanan2/image41.png" alt="026e9486c7d894761d05b9d588e8438">{width=”3.975in”<br>height=”1.1083333333333334in”}</p>
+<p><img src="/ruanan2/image42.png" alt="01c4e6917810542ead3ab0a2f57cf4b">{width=”5.383333333333334in”<br>height=”1.0583333333333333in”}</p>
+<p>eip=00401096，即要运行的下一条call命令的地址</p>
+<p>接下来是跳转之后的情况<img src="/ruanan2/image43.png" alt="99b0e584745af6a48e3515131e2cf30">{width=”7.166666666666667in”<br>height=”1.0659722222222223in”}在call命令执行之后，esp=0019FF1C，这里是main函数栈帧的底部0040109B</p>
+<p><img src="/ruanan2/image44.png" alt="73842b1291ea7f57a9322c2ada46c8a">{width=”6.840972222222222in”<br>height=”1.1118055555555555in”}</p>
+<p><img src="/ruanan2/image45.png" alt="3ce744d6a7b420332b96738ac0b0ed6">{width=”6.804166666666666in”<br>height=”2.188888888888889in”}</p>
+<p>ebp=0019FF70，跟跳转之前没有变化，其作用是在调用函数时保存EBP使函数结束时可以正确返回；加E（enhance）代表增强型寄存器，用于32位数据处理</p>
+<p>eip=00401000，即被调用函数的第一条指令地址</p>
+<h3 id="b-程序功能和破解"><a href="#b-程序功能和破解" class="headerlink" title="b)  程序功能和破解"></a>b)  程序功能和破解</h3><p>根据a)中的分析，整个程序的流程大致是读入用户可定义的一个系统参数，打印输入这个参数前后的堆栈情况，至于要破解这个程序，我们可以先找到shellcode，令我们想起了刚刚的bar函数</p>
+<p><img src="/ruanan2/image46.png" alt="7799b6f13114cff99400f9c49f5fed4">{width=”4.15in”<br>height=”0.9833333333333333in”}</p>
+<p>根据字符串的意思，这里的bar函数应该就是我们要执行的shellcode位置了可以多输一些字符串进去，并且最好4个一组，比如1111222233334444，这样可以根据寄存器的值情况，（如eip）来判断溢出位置</p>
+<p>于是想办法构造栈溢出以覆盖地址，我们再回过头来看一下输入111时的堆栈情况</p>
+<p><img src="/ruanan2/image47.png" alt="e7d84dfe011bc1436a80977e1dcdb11">{width=”6.816666666666666in”<br>height=”3.5597222222222222in”}</p>
+<p>字符串最后自动跟了一个截断字节0x00，接下来是3个地址，004010E1，0040109B和006F0ECA，这其中最可疑的是0040109B，它是main函数栈帧的底部，也就是esp的值指向的位置</p>
+<p><img src="/ruanan2/image48.png" alt="c12293d93555f42215e6443d8a5a959">{width=”6.705555555555556in”<br>height=”2.658333333333333in”}</p>
+<p>这里ret指向的返回地址即是esp中的值0040109B，于是我们栈溢出的位置就很明确了——覆盖至esp，一共是12字节的垃圾数据+4字节的地址字节，同时因为0x00的存在，我们只需要构造40，10，60的特殊字符即可</p>
+<p><img src="/ruanan2/image49.png" alt="339da857fe3bb2631ed47292bd8fa07">{width=”5.7659722222222225in”<br>height=”4.04375in”}</p>
+<p><img src="/ruanan2/image50.png" alt="434cdd0139318e767792932d2eb0d42">{width=”6.868055555555555in”<br>height=”4.563194444444444in”}</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">1vyyyyyy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2022/10/24/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C2%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/">http://example.com/2022/10/24/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C2%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/%E5%B0%81%E9%9D%A2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/10/23/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C1%E2%80%94%E2%80%94%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%A0%B4%E8%A7%A3/"><img class="next-cover" src="/img/%E5%B0%81%E9%9D%A2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">软件安全实验1——小程序破解</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/iu.gif" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">1vyyyyyy</div><div class="author-info__description">blog</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA"><span class="toc-number">1.</span> <span class="toc-text">实验二：缓冲区溢出</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.</span> <span class="toc-text">一、目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B5%8B%E8%AF%95%E6%AD%A5%E9%AA%A4%E4%B8%8E%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.</span> <span class="toc-text">二、测试步骤与结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-overflow-var-cpp%E7%9B%B8%E9%82%BB%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.overflow_var.cpp相邻变量覆盖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Overflow-ret-cpp%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%E8%A6%86%E7%9B%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.Overflow_ret.cpp返回地址覆盖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B5%8B%E8%AF%95%E7%BB%93%E8%AE%BA"><span class="toc-number">1.3.</span> <span class="toc-text">三、测试结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%99%84%E5%8A%A0%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">四、附加题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a-PE%E6%96%87%E4%BB%B6%E8%A2%AB%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%E6%97%B6%EF%BC%8C%E5%9C%B0%E5%9D%80%E7%9A%84%E5%A4%A7%E8%87%B4%E5%8F%98%E5%8C%96%E6%83%85%E5%86%B5%E5%A6%82%E4%B8%8B"><span class="toc-number">1.4.1.</span> <span class="toc-text">a)  PE文件被加载到内存中时，地址的大致变化情况如下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b-%E7%A8%8B%E5%BA%8F%E5%8A%9F%E8%83%BD%E5%92%8C%E7%A0%B4%E8%A7%A3"><span class="toc-number">1.4.2.</span> <span class="toc-text">b)  程序功能和破解</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/10/24/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C2%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/" title="软件安全实验2——缓冲区溢出">软件安全实验2——缓冲区溢出</a><time datetime="2022-10-24T07:18:28.000Z" title="Created 2022-10-24 15:18:28">2022-10-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/10/23/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E5%AE%9E%E9%AA%8C1%E2%80%94%E2%80%94%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%A0%B4%E8%A7%A3/" title="软件安全实验1——小程序破解">软件安全实验1——小程序破解</a><time datetime="2022-10-23T14:58:28.000Z" title="Created 2022-10-23 22:58:28">2022-10-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/07/13/BUUCTF-Misc-3/" title="BUUCTF Misc wp大合集(3)">BUUCTF Misc wp大合集(3)</a><time datetime="2022-07-13T08:49:21.000Z" title="Created 2022-07-13 16:49:21">2022-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/07/10/BUUCTF-Misc-2/" title="BUUCTF Misc wp大合集(2)">BUUCTF Misc wp大合集(2)</a><time datetime="2022-07-10T08:49:21.000Z" title="Created 2022-07-10 16:49:21">2022-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/07/05/BUUCTF-Misc-1/" title="BUUCTF Misc wp大合集(1)">BUUCTF Misc wp大合集(1)</a><time datetime="2022-07-05T08:49:21.000Z" title="Created 2022-07-05 16:49:21">2022-07-05</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 1vyyyyyy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
