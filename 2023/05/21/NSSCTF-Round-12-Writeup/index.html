@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>NSSCTF Round#12 Writeup | Ivy Shaw's Blog</title><meta name="keywords" content="cyberspace security"><meta name="author" content="Ivy"><meta name="copyright" content="Ivy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言Misc专题赛，最近事情多，正好周末先把云计算的实验做完了，打完这个看MSI美滋滋 题解Secrets in Shadow需要用ssh连接到靶机上，用户ctf没有查看flag的权限  根据题目提示，&#x2F;etc&#x2F;shadow里面有我们需要的信息  于是结合&#x2F;etc&#x2F;passwd，使用unshadow+john爆破root的密码 scp命令保存到本地，再用unshadow合并成一个文件  john爆">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSSCTF Round#12 Writeup">
+<meta property="og:url" content="http://example.com/2023/05/21/NSSCTF-Round-12-Writeup/index.html">
+<meta property="og:site_name" content="Ivy Shaw&#39;s Blog">
+<meta property="og:description" content="前言Misc专题赛，最近事情多，正好周末先把云计算的实验做完了，打完这个看MSI美滋滋 题解Secrets in Shadow需要用ssh连接到靶机上，用户ctf没有查看flag的权限  根据题目提示，&#x2F;etc&#x2F;shadow里面有我们需要的信息  于是结合&#x2F;etc&#x2F;passwd，使用unshadow+john爆破root的密码 scp命令保存到本地，再用unshadow合并成一个文件  john爆">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/5s.jpg">
+<meta property="article:published_time" content="2023-05-21T01:11:49.000Z">
+<meta property="article:modified_time" content="2023-05-21T03:06:53.456Z">
+<meta property="article:author" content="Ivy">
+<meta property="article:tag" content="cyberspace security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/5s.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2023/05/21/NSSCTF-Round-12-Writeup/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NSSCTF Round#12 Writeup',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-21 11:06:53'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/5s.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Ivy Shaw's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NSSCTF Round#12 Writeup</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-05-21T01:11:49.000Z" title="Created 2023-05-21 09:11:49">2023-05-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-05-21T03:06:53.456Z" title="Updated 2023-05-21 11:06:53">2023-05-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CTF/">CTF</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NSSCTF Round#12 Writeup"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Misc专题赛，最近事情多，正好周末先把云计算的实验做完了，打完这个看MSI美滋滋</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="Secrets-in-Shadow"><a href="#Secrets-in-Shadow" class="headerlink" title="Secrets in Shadow"></a>Secrets in Shadow</h3><p>需要用ssh连接到靶机上，用户ctf没有查看flag的权限</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\1.png" alt="1"></p>
+<p>根据题目提示，/etc/shadow里面有我们需要的信息</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\2.png" alt="2"></p>
+<p>于是结合/etc/passwd，使用unshadow+john爆破root的密码</p>
+<p>scp命令保存到本地，再用unshadow合并成一个文件</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\3.png" alt="3"></p>
+<p>john爆破密码</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\4.png" alt="4"></p>
+<p>root的密码是bullshit，登录上去即可访问flag</p>
+<h3 id="Bulbasaur"><a href="#Bulbasaur" class="headerlink" title="Bulbasaur"></a>Bulbasaur</h3><p>据说是盲水印，不过我没试出来，有结果了再补</p>
+<h3 id="奇怪的tex文件"><a href="#奇怪的tex文件" class="headerlink" title="奇怪的tex文件"></a>奇怪的tex文件</h3><p>发现png文件头</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\5.png" alt="5"></p>
+<p>去掉前面的CM3D2…部分后可以得到能显示的图片，每个tex文件对应一个字符</p>
+<p>脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_tex_to_png</span>(<span class="params">file_path</span>):</span></span><br><span class="line">    <span class="comment"># 读取文件内容</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> file:</span><br><span class="line">        content = file.read()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除前32个字节</span></span><br><span class="line">    new_content = content[<span class="number">32</span>:]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将剩余内容保存为png文件</span></span><br><span class="line">    new_file_path = os.path.splitext(file_path)[<span class="number">0</span>] + <span class="string">&#x27;.png&#x27;</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_file_path, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> file:</span><br><span class="line">        file.write(new_content)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 可选步骤：将png文件打开并重新保存，以确保有效性</span></span><br><span class="line">    image = Image.<span class="built_in">open</span>(new_file_path)</span><br><span class="line">    image.save(new_file_path)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Converted <span class="subst">&#123;file_path&#125;</span> to <span class="subst">&#123;new_file_path&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process_files</span>(<span class="params">directory</span>):</span></span><br><span class="line">    <span class="comment"># 遍历目录下的所有文件和文件夹</span></span><br><span class="line">    <span class="keyword">for</span> root, dirs, files <span class="keyword">in</span> os.walk(directory):</span><br><span class="line">        <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">            <span class="keyword">if</span> file.endswith(<span class="string">&quot;.tex&quot;</span>):</span><br><span class="line">                file_path = os.path.join(root, file)</span><br><span class="line">                convert_tex_to_png(file_path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">directory_path = <span class="string">&quot;Tex&quot;</span></span><br><span class="line">process_files(directory_path)</span><br></pre></td></tr></table></figure>
+
+<h3 id="坏东西"><a href="#坏东西" class="headerlink" title="坏东西"></a>坏东西</h3><p>很多嵌套的压缩包，每个压缩包的密码就是其名字</p>
+<p>脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_zip</span>(<span class="params">file_path, password</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> zipfile.ZipFile(file_path) <span class="keyword">as</span> zip_ref:</span><br><span class="line">            zip_ref.extractall(pwd=password.encode())</span><br><span class="line">        <span class="keyword">return</span> zip_ref.namelist()[<span class="number">0</span>][:-<span class="number">4</span>]</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Failed to extract <span class="subst">&#123;file_path&#125;</span>: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    password = <span class="string">&quot;99020&quot;</span></span><br><span class="line">    file_path = <span class="string">&quot;99020.zip&quot;</span></span><br><span class="line">    <span class="keyword">while</span> os.path.exists(file_path):</span><br><span class="line">        password = extract_zip(file_path, password)</span><br><span class="line">        <span class="built_in">print</span>(password)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Successfully extracted <span class="subst">&#123;file_path&#125;</span>&quot;</span>)</span><br><span class="line">        file_path = <span class="string">f&quot;<span class="subst">&#123;password&#125;</span>.zip&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(file_path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>最后得到一个损坏的pdf文件</p>
+<p>用记事本打开，发现flag的每个字符都这样分散</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\6.png" alt="6"></p>
+<h3 id="My-DCIC-trip"><a href="#My-DCIC-trip" class="headerlink" title="My DCIC trip"></a>My DCIC trip</h3><p>这道社工比较简单，在百度地图上看一下距离就行</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\7.png" alt="7"></p>
+<p>根据喜茶分店的距离可以作中轴线，酒店分店1大致在飞凤山奥体公园附近</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\8.png" alt="8"></p>
+<p>酒店分店2同理也可以找出来</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\9.png" alt="9"></p>
+<p>附近的酒店有这些</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\10.png" alt="10"></p>
+<p>综合结果看应该是维也纳酒店，这家酒店分店开的很多</p>
+<p>再去美团验证一下距离就行</p>
+<h3 id="ordinary-forensics"><a href="#ordinary-forensics" class="headerlink" title="ordinary forensics"></a>ordinary forensics</h3><p>volatility扫zip和txt，发现可疑的useful.zip和hint.txt</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\11.png" alt="11"></p>
+<p>dump出来，根据hint.txt的提示需要挂载veracrypt</p>
+<p>而useful.zip需要密码，于是cmdscan</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\12.png" alt="12"></p>
+<p>经测试是useful.zip的密码，得到密钥文件，挂载的时候选择keyfile为useful.txt</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\13.png" alt="13"></p>
+<p>得到secret，经检测是img文件，挂载后得到flag.zip</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\14.png" alt="14"></p>
+<p>备注中有压缩包密码</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\15.png" alt="15"></p>
+<p>回到volatility查看这两条信息</p>
+<p><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\16.png" alt="16"><img src="C:\Users\Administrator\Desktop\博客\1vyyyyyy.github.io\source\NSS12\17.png" alt="17"></p>
+<p>打开压缩包即得flag</p>
+<h3 id="strange-python"><a href="#strange-python" class="headerlink" title="strange python"></a>strange python</h3><p>预期解是读取随机数的种子seed，然后根据这个seed来做list的混淆测试，再根据映射来恢复flag</p>
+<p>我这里是直接open(‘/home/ctf/flag’,’r’).read()，原理是出题人给python上了特殊权限</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Ivy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/05/21/NSSCTF-Round-12-Writeup/">http://example.com/2023/05/21/NSSCTF-Round-12-Writeup/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/5s.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/04/23/IoT%E5%AE%89%E5%85%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="next-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">IoT安全学习笔记（一） 硬件安全</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ivy</div><div class="author-info__description">BUPT | School of Cyberspace Security</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/1vyyyyyy"><i class="fab fa-github"></i><span>我的Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/1vyyyyyy" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:ivygetshe11@bupt.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1258294332&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">个人学习笔记，欢迎与我交流学习</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">题解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Secrets-in-Shadow"><span class="toc-number">2.1.</span> <span class="toc-text">Secrets in Shadow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bulbasaur"><span class="toc-number">2.2.</span> <span class="toc-text">Bulbasaur</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%87%E6%80%AA%E7%9A%84tex%E6%96%87%E4%BB%B6"><span class="toc-number">2.3.</span> <span class="toc-text">奇怪的tex文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9D%8F%E4%B8%9C%E8%A5%BF"><span class="toc-number">2.4.</span> <span class="toc-text">坏东西</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#My-DCIC-trip"><span class="toc-number">2.5.</span> <span class="toc-text">My DCIC trip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ordinary-forensics"><span class="toc-number">2.6.</span> <span class="toc-text">ordinary forensics</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strange-python"><span class="toc-number">2.7.</span> <span class="toc-text">strange python</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/21/NSSCTF-Round-12-Writeup/" title="NSSCTF Round#12 Writeup">NSSCTF Round#12 Writeup</a><time datetime="2023-05-21T01:11:49.000Z" title="Created 2023-05-21 09:11:49">2023-05-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/23/IoT%E5%AE%89%E5%85%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="IoT安全学习笔记（一） 硬件安全">IoT安全学习笔记（一） 硬件安全</a><time datetime="2023-04-23T08:40:19.000Z" title="Created 2023-04-23 16:40:19">2023-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/09/NSSCTF-Round-11-Writeup/" title="NSSCTF Round#11 Writeup">NSSCTF Round#11 Writeup</a><time datetime="2023-04-09T06:51:05.000Z" title="Created 2023-04-09 14:51:05">2023-04-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/07/CVE-2019-5736-docker-runc%E9%80%83%E9%80%B8%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="CVE-2019-5736 docker runc逃逸漏洞复现">CVE-2019-5736 docker runc逃逸漏洞复现</a><time datetime="2023-04-06T16:50:16.000Z" title="Created 2023-04-07 00:50:16">2023-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/02/%E7%99%B8%E5%8D%AF%E4%BB%B2%E6%98%A5%E6%9D%82%E8%AE%B0%E2%80%94%E2%80%94%E6%94%B6%E9%9B%86%E4%B8%80%E4%BA%9B%E7%9D%A1%E5%89%8D%E6%83%B3%E6%B3%95/" title="癸卯仲春杂记——收集一些睡前想法">癸卯仲春杂记——收集一些睡前想法</a><time datetime="2023-04-02T15:11:58.000Z" title="Created 2023-04-02 23:11:58">2023-04-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Ivy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
