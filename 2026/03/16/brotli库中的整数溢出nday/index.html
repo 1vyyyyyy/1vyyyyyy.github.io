@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>brotli库中的整数溢出nday | Ivy Shaw's Blog</title><meta name="keywords" content="cyberspace security"><meta name="author" content="Ivy"><meta name="copyright" content="Ivy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="在泄露的微星源码中发现使用了v1.0.6的Brotli库 这个库主要是基于 LZ77、哈夫曼编码和字典压缩来节省存储空间，加快数据传输速度 看了一下EDK2里面的MdeModulePkg是引用了这个库，编译了之后是放在DxeIpl这个模块中，用于PEI和DXE阶段间的数据递接   在github上面发现v.1.0.8之前的版本有个CVE-2020-8927，这个源码是22年左右泄露的，说明现在的固">
+<meta property="og:type" content="article">
+<meta property="og:title" content="brotli库中的整数溢出nday">
+<meta property="og:url" content="http://example.com/2026/03/16/brotli%E5%BA%93%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAnday/index.html">
+<meta property="og:site_name" content="Ivy Shaw&#39;s Blog">
+<meta property="og:description" content="在泄露的微星源码中发现使用了v1.0.6的Brotli库 这个库主要是基于 LZ77、哈夫曼编码和字典压缩来节省存储空间，加快数据传输速度 看了一下EDK2里面的MdeModulePkg是引用了这个库，编译了之后是放在DxeIpl这个模块中，用于PEI和DXE阶段间的数据递接   在github上面发现v.1.0.8之前的版本有个CVE-2020-8927，这个源码是22年左右泄露的，说明现在的固">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/5s.jpg">
+<meta property="article:published_time" content="2026-03-16T11:22:19.000Z">
+<meta property="article:modified_time" content="2026-03-16T11:28:27.362Z">
+<meta property="article:author" content="Ivy">
+<meta property="article:tag" content="cyberspace security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/5s.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2026/03/16/brotli%E5%BA%93%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAnday/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'brotli库中的整数溢出nday',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2026-03-16 19:28:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">33</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/5s.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Ivy Shaw's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">brotli库中的整数溢出nday</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-03-16T11:22:19.000Z" title="Created 2026-03-16 19:22:19">2026-03-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-16T11:28:27.362Z" title="Updated 2026-03-16 19:28:27">2026-03-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="brotli库中的整数溢出nday"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>在泄露的微星源码中发现使用了v1.0.6的Brotli库</p>
+<p>这个库主要是基于 LZ77、哈夫曼编码和字典压缩来节省存储空间，加快数据传输速度</p>
+<p>看了一下EDK2里面的MdeModulePkg是引用了这个库，编译了之后是放在DxeIpl这个模块中，用于PEI和DXE阶段间的数据递接</p>
+<img src="/brotli/1.png" alt="1" style="zoom: 67%;" />
+
+<p>在github上面发现v.1.0.8之前的版本有个CVE-2020-8927，这个源码是22年左右泄露的，说明现在的固件里面如果用了这个，大概率可能没打补丁</p>
+<img src="/brotli/2.png" alt="1" style="zoom: 67%;" />
+
+<p>这个洞的描述比较模糊，意思是在decoder中传入超过2GiB的数据就会造成整数溢出，这里应该是涉及到了指针的操作</p>
+<p>然后去decoder部分找这个洞的补丁，发现有一个地方加了上限值校验</p>
+<img src="/brotli/3.png" alt="1" style="zoom: 67%;" />
+
+<p>BROTLI_LARGE_MAX_WBITS  = 30，即br-&gt;avail有可能 &gt; 2^30</p>
+<p>找到调用BrotliGetRemainingBytes函数的唯一一个地方，返回值类型被强制转换为int nbytes，然后nbytes被作为BrotliCopyBytes的参数来调用</p>
+<img src="/brotli/4.png" alt="1" style="zoom: 67%;" />
+
+<p>s-&gt;br的类型是BrotliBitReader</p>
+<img src="/brotli/5.png" alt="1" style="zoom: 67%;" />
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="keyword">brotli_reg_t</span> val_;       <span class="comment">/* pre-fetched bits */</span></span><br><span class="line">  <span class="keyword">uint32_t</span> bit_pos_;       <span class="comment">/* current bit-reading position in val_ */</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint8_t</span>* next_in;  <span class="comment">/* the byte we&#x27;re reading from */</span></span><br><span class="line">  <span class="keyword">size_t</span> avail_in;</span><br><span class="line">&#125; BrotliBitReader;</span><br></pre></td></tr></table></figure>
+
+<p>然后找到调用CopyUncompressedBlockToOutput的函数BrotliDecoderDecompressStream</p>
+<p>其中对br-&gt;avail参数的赋值语句有两条</p>
+<img src="/brotli/6.png" alt="1" style="zoom: 67%;" />
+
+<p>构造：available_in != 0 &amp;&amp; br-&gt;avail_in != 0 这两个条件</p>
+<p>走到下面那个分支，相当于把uint32类型的值赋给了int，如果s-&gt;buffer_length超过了int最大值就整数溢出了</p>
+<p>这里EDK2写了个uefi app的C文件把Brotli库封装起来了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function"><span class="title">BrotliDecompress</span> <span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN CONST VOID*  Source,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN UINTN        SourceSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN OUT VOID*    Destination,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN OUT UINTN    DestSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN VOID *       BuffInfo</span></span></span><br><span class="line"><span class="params"><span class="function">  )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  UINT8 *        Input;</span><br><span class="line">  UINT8 *        Output;</span><br><span class="line">  <span class="keyword">const</span> UINT8 *  NextIn;</span><br><span class="line">  UINT8 *        NextOut;</span><br><span class="line">  <span class="keyword">size_t</span>         TotalOut;</span><br><span class="line">  <span class="keyword">size_t</span>         AvailableIn;</span><br><span class="line">  <span class="keyword">size_t</span>         AvailableOut;</span><br><span class="line">  VOID *         Temp;</span><br><span class="line">  BrotliDecoderResult   Result;</span><br><span class="line">  BrotliDecoderState *  BroState;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// ......</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (Result == BROTLI_DECODER_RESULT_NEEDS_MORE_INPUT) &#123;</span><br><span class="line">      <span class="keyword">if</span> (SourceSize == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (SourceSize &gt;= FILE_BUFFER_SIZE) &#123;</span><br><span class="line">        AvailableIn = FILE_BUFFER_SIZE;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        AvailableIn = SourceSize;</span><br><span class="line">      &#125;</span><br><span class="line">      CopyMem(Input, Source, AvailableIn);</span><br><span class="line"><span class="comment">// ......</span></span><br><span class="line">    Result = BrotliDecoderDecompressStream(</span><br><span class="line">                          BroState,</span><br><span class="line">                          &amp;AvailableIn,</span><br><span class="line">                          &amp;NextIn,</span><br><span class="line">                          &amp;AvailableOut,</span><br><span class="line">                          &amp;NextOut,</span><br><span class="line">                          &amp;TotalOut</span><br><span class="line">                          );</span><br></pre></td></tr></table></figure>
+
+<p>构造PoC的话从Brostate和AvailableIn两个参数下手</p>
+<p>目前有一个未知的问题，社区中说用GCC 11编译brotli子模块会有问题，相当于在这种条件下UEFI固件中DxeIpl驱动中并不包含Brotli库</p>
+<p>有可能一些版本的固件中找不到上面的代码，但微星确实没有修</p>
+<img src="/brotli/7.png" alt="1" style="zoom: 67%;" />
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Ivy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2026/03/16/brotli%E5%BA%93%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAnday/">http://example.com/2026/03/16/brotli%E5%BA%93%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAnday/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/5s.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/11/24/Pwn-Exercise-5/"><img class="next-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Pwn Exercise(5)</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ivy</div><div class="author-info__description">BUPT | School of Cyberspace Security</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">33</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/1vyyyyyy"><i class="fab fa-github"></i><span>我的Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/1vyyyyyy" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:ivygetshe11@bupt.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1258294332&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">个人学习笔记，欢迎与我交流学习</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/16/brotli%E5%BA%93%E4%B8%AD%E7%9A%84%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BAnday/" title="brotli库中的整数溢出nday">brotli库中的整数溢出nday</a><time datetime="2026-03-16T11:22:19.000Z" title="Created 2026-03-16 19:22:19">2026-03-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/11/24/Pwn-Exercise-5/" title="Pwn Exercise(5)">Pwn Exercise(5)</a><time datetime="2023-11-24T03:36:19.000Z" title="Created 2023-11-24 11:36:19">2023-11-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/12/Pwn-Exercise-4/" title="Pwn Exercise(4)">Pwn Exercise(4)</a><time datetime="2023-10-12T08:09:19.000Z" title="Created 2023-10-12 16:09:19">2023-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/03/Pwn-Exercise-3/" title="Pwn Exercise(3)">Pwn Exercise(3)</a><time datetime="2023-09-03T08:55:13.000Z" title="Created 2023-09-03 16:55:13">2023-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/01/Pwn-Exercise-2/" title="Pwn Exercise(2)">Pwn Exercise(2)</a><time datetime="2023-09-01T05:19:08.000Z" title="Created 2023-09-01 13:19:08">2023-09-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Ivy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
