@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="zh-Hans" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>UEFI SecureBoot简介 | Ivy Shaw's Blog</title><meta name="keywords" content="cyberspace security"><meta name="author" content="Ivy"><meta name="copyright" content="Ivy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="UEFI Secure BootUEFI Secure Boot 是内置在UEFI BIOS中的一项安全功能，旨在确保固件环境中仅执行经密钥验证后可信的EFI驱动 UEFI Secure Boot 的执行流程依赖于PK、KEK、db和dbx这四个数据库，这些数据库存储在UEFI变量中，在信任链中被使用  PK(Platform Key)：平台密钥PK是UEFI Secure Boot信任链的根，每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UEFI SecureBoot简介">
+<meta property="og:url" content="http://example.com/2024/01/27/UEFI-SecureBoot%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="Ivy Shaw&#39;s Blog">
+<meta property="og:description" content="UEFI Secure BootUEFI Secure Boot 是内置在UEFI BIOS中的一项安全功能，旨在确保固件环境中仅执行经密钥验证后可信的EFI驱动 UEFI Secure Boot 的执行流程依赖于PK、KEK、db和dbx这四个数据库，这些数据库存储在UEFI变量中，在信任链中被使用  PK(Platform Key)：平台密钥PK是UEFI Secure Boot信任链的根，每">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/img/5s.jpg">
+<meta property="article:published_time" content="2024-01-27T06:56:01.000Z">
+<meta property="article:modified_time" content="2026-03-17T08:48:40.584Z">
+<meta property="article:author" content="Ivy">
+<meta property="article:tag" content="cyberspace security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/5s.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://example.com/2024/01/27/UEFI-SecureBoot%E7%AE%80%E4%BB%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UEFI SecureBoot简介',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-03-17 16:48:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/mycss.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/head1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">41</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/5s.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Ivy Shaw's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">UEFI SecureBoot简介</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-01-27T06:56:01.000Z" title="Created 2024-01-27 14:56:01">2024-01-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-17T08:48:40.584Z" title="Updated 2026-03-17 16:48:40">2026-03-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="UEFI SecureBoot简介"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="UEFI-Secure-Boot"><a href="#UEFI-Secure-Boot" class="headerlink" title="UEFI Secure Boot"></a>UEFI Secure Boot</h1><p>UEFI Secure Boot 是内置在UEFI BIOS中的一项安全功能，旨在确保固件环境中仅执行经密钥验证后可信的EFI驱动</p>
+<p>UEFI Secure Boot 的执行流程依赖于PK、KEK、db和dbx这四个数据库，这些数据库存储在UEFI变量中，在信任链中被使用</p>
+<ul>
+<li>PK(Platform Key)：平台密钥PK是UEFI Secure Boot信任链的根，每个平台都有一个对应于制造商的PK，通常直接由制造商预装在固件中。PK私钥部分用于对UEFI固件中的OS Loader和Boot Loader进行签名，生成证书；PK公钥部分用于对这些UEFI驱动的证书进行验签</li>
+<li>KEK(Key Exchange Key)：密钥交换密钥KEK可以存在多个 ，每一项对应一种可以被启动的操作系统。KEK私钥部分用于对db和dbx、(dbt)进行签名，生成证书；KEK公钥部分用来对 db、dbx、(dbt) 进行验签</li>
+<li>db(Database)：白名单数据库db是用于对被许可予以加载的 EFI 文件的签名数据库 ，因此 db 的公钥也可以存在很多项</li>
+<li>dbx(Database Excluded)：黑名单数据库dbx是一个黑名单签名数据库，签名在dbx中的UEFI文件在加载时会被禁止执行，dbx的公钥也可以存在很多项</li>
+</ul>
+<p>UEFI Secure Boot 包括两部分，包括对启动镜像的验证和以上四种数据库的验证</p>
+<img src="/uefisb/1.png" alt="1" style="zoom: 67%;" />
+
+<p>其中PK（Platform Key），KEK（Key Exchange Key），db是经验证过的合法映像数据库，dbx是映像黑名单，dbt是时间戳签名数据库</p>
+<img src="/uefisb/2.png" alt="1" style="zoom: 67%;" />
+
+<p>引入dbt的验证流程如图所示，需要基于 dbx 签名进行额外检查。</p>
+<img src="/uefisb/3.png" alt="1" style="zoom: 67%;" />
+
+<h2 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h2><h3 id="CVE-2022-21894"><a href="#CVE-2022-21894" class="headerlink" title="CVE-2022-21894"></a>CVE-2022-21894</h3><p>CVE-2022-21894是一种被称为 Baton Drop 的安全漏洞，它涉及到Windows上的 Secure Boot功能绕过，被集成到近两年流行的bootkit–BlackLotus中，从而允许攻击者使用其他危险的BCD选项，例如Bootdebug、Testsigning或 Nointegritychecks。</p>
+<p>攻击者需要确保序列化的 Secure Boot策略被分配在一个已知的物理地址之上，默认情况下，它被分配在最低可能的地址，而BCD选项中的avoidlowmemory 元素可以用来确保所有物理内存的分配都在指定的物理地址上。在BlackLotus中，攻击者将保存原始BCD选项的文件替换为了非法构造的bootmgfw.efi，从而允许在不进行完整性检查（nointegritychecks）的情况下加载驱动hvloader.efi ，并加载一个自签名的 mcupdate.dll。</p>
+<img src="/uefisb/4.png" alt="1" style="zoom: 67%;" />
+
+<p>hvload.efi 调用的 BtpLayoutImage函数存在一个回调callback，该回调实际上并没有对存储 Secure 策略的变量 qword_1400E0340进行检查，因此会忽略被删掉的 Secure Boot 策略，直接返回执行加载 .dll 文件的代码，使得攻击者可以利用mcupdate.dll进行提权或植入后门。</p>
+<img src="/uefisb/5.png" alt="1" style="zoom: 67%;" />
+
+<h3 id="CVE-2020-10713-Boot-Hole"><a href="#CVE-2020-10713-Boot-Hole" class="headerlink" title="CVE-2020-10713 Boot Hole"></a>CVE-2020-10713 Boot Hole</h3><p>GRUB2 配置文件是一个文本文件，通常不会像其他文件和可执行文件那样进行签名。该漏洞允许在 GRUB2  中执行任意代码，从而控制操作系统的启动。因此，攻击者可以修改 GRUB2  配置文件的内容，以确保攻击代码在操作系统加载之前运行。通过这种方式，攻击者可以在设备上获得持久性。 </p>
+<p>GRUB2支持在efi文件中注入签名，参与安全启动的校验流程。但是，由Eclypsium公司发现GRUB2引导程序存在漏洞，导致使用UEFI Secure Boot的系统容易被恶意攻击者利用，进而跳过安全校验流程，修改引导过程或引导的内核及其他恶意动作</p>
+<ul>
+<li>经过分析，该漏洞在解析grub.cfg文件时在grub2内部发生了一个缓冲区溢出的漏洞。grub.cfg文件位于EFI分区中，因此只要拥root权限的攻击者，可以跳过修改shim或者grub2引导程序文件的前提下，修改grub.cfg。由于缓冲区溢出使得攻击者可以在UEFI引导阶段获得执行任意代码的权限，从而跳过原有的安全校验流程</li>
+<li>当前之所以可以造成解析grub.cfg文件溢出后可以造成攻击者拥有执行任意代码权限的原因是因为：这个缓冲区溢出覆盖了词法分析器Flex在堆中的部分字段，这些字段包括多个内部解析元素，拥有任意读写能力。所以，会造成攻击者获得执行任意代码的权限并篡改引导过程</li>
+</ul>
+<p>GRUB2提供的YY_FATAL_ERROR函数并没有停止执行或者退出，仅仅是向串口打印一个错误并返回调用的函数。所以会导致yy_flex_strncpy将长度超大的字符串复制到yytext中从而造成缓冲区溢出。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> YY_FATAL_ERROR(msg)                     </span></span><br><span class="line">  <span class="keyword">do</span> &#123;                                          </span><br><span class="line">    grub_printf (_(<span class="string">&quot;fatal error: %s\n&quot;</span>), _(msg));     </span><br><span class="line">  &#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> YY_DO_BEFORE_ACTION</span></span><br><span class="line">    yyg-&gt;yytext_ptr = yy_bp;</span><br><span class="line">    yyleng = (<span class="keyword">int</span>) (yy_cp - yy_bp); </span><br><span class="line">    yyg-&gt;yy_hold_char = *yy_cp; </span><br><span class="line">    *yy_cp = <span class="string">&#x27;\0&#x27;</span>; </span><br><span class="line">    <span class="keyword">if</span> ( yyleng &gt;= YYLMAX ) </span><br><span class="line">        YY_FATAL_ERROR( <span class="string">&quot;token too large, exceeds YYLMAX&quot;</span> ); </span><br><span class="line">    yy_flex_strncpy( yytext, yyg-&gt;yytext_ptr, yyleng + <span class="number">1</span> , yyscanner); </span><br><span class="line">    yyg-&gt;yy_c_buf_p = yy_cp;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CVE-2022-4020"><a href="#CVE-2022-4020" class="headerlink" title="CVE-2022-4020"></a>CVE-2022-4020</h3><p>CVE-2022-4020影响宏碁Aspire A315-22的某些版本，该漏洞存在于这些宏碁笔记本设备上的HQSwSmiDxe  DXE驱动程序中。与联想的问题类似，具有提升权限的攻击者可以利用该漏洞通过修改NVRAM变量来修改UEFI Secure  Boot设置。如果NVRAM变量“BootOrderSecureBootDisable”存在，则DXE驱动程序BootOrderDxe只需禁用UEFI Secure Boot。</p>
+<img src="/uefisb/6.jpeg" alt="1" style="zoom: 67%;" />
+
+<h3 id="CVE-2017-7932"><a href="#CVE-2017-7932" class="headerlink" title="CVE-2017-7932"></a>CVE-2017-7932</h3><h4 id="ARM架构下的Secure-Boot"><a href="#ARM架构下的Secure-Boot" class="headerlink" title="ARM架构下的Secure Boot"></a>ARM架构下的Secure Boot</h4><p>ARM架构下的 Secure Boot 过程通常涉及打包在多个二进制文件中的本机代码的链式执行，这些二进制文件被加载、验证为真实且未被篡改，并按顺序执行，最终系统准备好按照制造商或用户的预期运行。这通常是通过使用数字签名的二进制文件来完成的，该二进制文件在执行时检查要加载和运行的下一个二进制文件的完整性和真实性，如果验证没有失败，则将控制权转移给它</p>
+<img src="/uefisb/7.png" alt="1" style="zoom: 67%;" />
+
+<p>如果系统在已知的良好状态下打开，并且启动时执行的二进制文件序列被验证为具有有效签名，则该序列的最后一个二进制文件运行后的结果状态被认为是良好且可信的。但是，如果 Secure Boot 过程中执行的二进制文件链中的单个链接无法对序列中的下一个二进制文件执行正确的验证，则系统的结果状态将不再可信。</p>
+<p>通常，这条信任链的根是建立在加密密钥材料（签名和加密密钥）和存储在片上ROM中的可信初始固件（bootrom）之上的</p>
+<h4 id="高保证启动-HAB"><a href="#高保证启动-HAB" class="headerlink" title="高保证启动 (HAB)"></a>高保证启动 (HAB)</h4><p>高保证启动 (HAB) 是 NXP 在 i.MX 处理器中实施的安全启动。这是内置于片上 ROM 中的功能，负责从引导介质加载初始程序映像，通常是第一阶段引导加载程序</p>
+<p>HAB 使用公钥加密技术（特别是 RSA 密钥）来验证启动时执行的映像。图像数据由图像提供者使用私钥离线签名，i.MX 处理器使用相应的公钥验证签名，公钥从要验证的二进制文件的一部分加载</p>
+<p>信任链的根烧写在一组称为超级根密钥(SRK) 的 RSA  密钥对上，用于防止加载和使用潜在攻击者提供的任意公钥，对于支持安全启动的 i.MX 处理器，这是一个屏蔽 ROM 和电可编程熔丝 (eFuse)</p>
+<p>启动时，HAB bootrom 会从映像的命令序列文件 (CSF)部分加载 SRK 表，计算哈希值并将其与 SRK  熔丝中存储的值进行比较。如果该值匹配，则 Secure Boot 过程将继续验证该映像是否使用正确的密钥进行了正确签名</p>
+<p>使用供应商提供的代码签名工具 (CST) 在 X.509 证书中配置公钥。 HAB 功能通过 API 暴露给启动映像代码，而可由命令序列文件中的命令调用。 CSF 包含  HAB 在安全启动期间执行的所有命令、SRK 表以及用于验证要加载和运行的映像的证书和签名</p>
+<img src="/uefisb/8.png" alt="1" style="zoom: 67%;" />
+
+<p>bootrom 的 X.509 证书解析器容易受到基于堆栈的缓冲区溢出的攻击，可以通过加载精心设计的证书来利用该溢出。</p>
+<p>安全启动的控制流程如下：</p>
+<ol>
+<li>从存储设备获取中断向量表 (IVT)，或在恢复模式下通过 USB 获取</li>
+<li>执行 DCD 命令</li>
+<li>执行 CSF 命令，这些命令负责安全启动完整性。当设备处于可信模式时，上述步骤 3 中的 CSF 命令通常如下所示：<ol>
+<li>安装 SRK 类型的 RSA公钥，其SHA256摘要必须与 SRK 熔丝中写入的相同</li>
+<li>使用 SRK 签名的 X.509 证书安装 CSFK 公钥</li>
+<li>使用 CSFK 验证 CSF</li>
+<li>安装公钥以验证启动映像</li>
+<li>使用之前安装的密钥验证启动映像</li>
+</ol>
+</li>
+<li>执行下一个引导加载程序阶段</li>
+</ol>
+<p>密钥安装是使用 <code>INSTALL_KEY</code> CSF 命令完成的。加载并验证不同的密钥，每个密钥都由先前安装的密钥进行验证（信任根是 SRK 熔丝）。</p>
+<p>当安装 X.509 类型的公钥时，函数<code>hab_csf_cmd_install_key</code>（位于地址<code>0xB5C0</code>）将找到负责导入 X.509 证书的插件并连续调用：</p>
+<ul>
+<li><code>mod_x509-&gt;load_key</code> (<code> x509_parse_certificate</code> )</li>
+<li><code>mod_x509-&gt;verify_key</code> (<code> x509_verify_certificate_signature</code> )</li>
+</ul>
+<p>因此，在验证其签名之前会解析整个证书。由于<code>INSTALL_KEY</code>命令可以在任何经过身份验证的命令之前执行，因此攻击者除了能够篡改启动映像或将设备切换到恢复模式之外，无需先决条件即可触发 X.509 解析器中的漏洞</p>
+<p>HAB bootrom 使用自己的 ASN.1 和 X.509 解析库，并且由于在解析 X.509 证书扩展时错误调用 ASN.1 库函数而存在漏洞</p>
+<p>函数<code>asn1_extract_bit_string</code>（位于地址<code>0xE796</code> ）可用于使用内部函数<code>asn1_deep_copy_element_data</code>（位于0xEF20 ）复制位字符串对象的内容</p>
+<p>递归调用此方法，将 ASN.1 对象的内容复制到作为参数传递的输出缓冲区中。该函数的一个特殊特征是它没有保存输出缓冲区值的输入参数，相反，当<code>NULL</code>指针作为输出缓冲区传递时，所需的大小将返回给调用者，这种行为与 Windows API 非常相似</p>
+<p><code>asn1_extract_bit_string</code>函数应首先使用NULL参数调用，使用malloc分配所需的内存，然后使用新分配的缓冲区再次调用该函数</p>
+<p>X.509 规范将<code>keyUsage</code>扩展描述为一个位字符串对象，解析证书扩展时，如果存在字段<code>keyUsage</code> ，则通过指定指向堆栈上的 32 位整数的指针作为输出缓冲区，直接调用函数<code>asn1_extract_bit_string </code>，<code>keyUsage</code>扩展中大小大于 4 字节的位字符串对象将触发堆栈缓冲区溢出</p>
+<p>当函数<code>asn1_extract_bit_string</code>返回时，bootrom代码验证返回的大小不大于4字节，但复制操作已经完成。然后调用函数返回并将其返回地址从堆栈中弹出，这允许攻击者重定向<code>PC</code>寄存器并执行任意代码。</p>
+<img src="/uefisb/9.png" alt="1" style="zoom: 67%;" />
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Ivy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2024/01/27/UEFI-SecureBoot%E7%AE%80%E4%BB%8B/">http://example.com/2024/01/27/UEFI-SecureBoot%E7%AE%80%E4%BB%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/5s.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> Donate</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/03/04/ThinkPwn-UEFI%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"><img class="prev-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">ThinkPwn UEFI提权漏洞复现</div></div></a></div><div class="next-post pull-right"><a href="/2023/12/13/UEFI%E5%85%A5%E9%97%A8/"><img class="next-cover" src="/img/5s.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">UEFI入门</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/head1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ivy</div><div class="author-info__description">BUPT | School of Cyberspace Security</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">41</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/1vyyyyyy"><i class="fab fa-github"></i><span>我的Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/1vyyyyyy" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:ivygetshe11@bupt.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1258294332&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">个人学习笔记，欢迎与我交流学习</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UEFI-Secure-Boot"><span class="toc-number">1.</span> <span class="toc-text">UEFI Secure Boot</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.1.</span> <span class="toc-text">漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2022-21894"><span class="toc-number">1.1.1.</span> <span class="toc-text">CVE-2022-21894</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2020-10713-Boot-Hole"><span class="toc-number">1.1.2.</span> <span class="toc-text">CVE-2020-10713 Boot Hole</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2022-4020"><span class="toc-number">1.1.3.</span> <span class="toc-text">CVE-2022-4020</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2017-7932"><span class="toc-number">1.1.4.</span> <span class="toc-text">CVE-2017-7932</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ARM%E6%9E%B6%E6%9E%84%E4%B8%8B%E7%9A%84Secure-Boot"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">ARM架构下的Secure Boot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E4%BF%9D%E8%AF%81%E5%90%AF%E5%8A%A8-HAB"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">高保证启动 (HAB)</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/%E5%A4%B1%E8%B8%AA%E4%BA%BA%E5%8F%A3%E5%9B%9E%E5%BD%92/" title="失踪人口回归">失踪人口回归</a><time datetime="2026-03-17T02:25:57.000Z" title="Created 2026-03-17 10:25:57">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/06/CVE-2025-4275-Insyde-%E8%AF%81%E4%B9%A6%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="CVE-2025-4275 Insyde 证书注入漏洞复现">CVE-2025-4275 Insyde 证书注入漏洞复现</a><time datetime="2025-11-06T09:31:05.000Z" title="Created 2025-11-06 17:31:05">2025-11-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%EF%BC%88%E7%9C%9F%EF%BC%89%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BMSI-Bomb-Shell/" title="记一次（真）邪修实验之MSI Bomb Shell">记一次（真）邪修实验之MSI Bomb Shell</a><time datetime="2025-10-15T07:51:35.000Z" title="Created 2025-10-15 15:51:35">2025-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%82%AA%E4%BF%AE%E5%AE%9E%E9%AA%8C%E4%B9%8BAFU-AMI-Firmware-Update-Patch/" title="记一次邪修实验之AFU(AMI Firmware Update) Patch">记一次邪修实验之AFU(AMI Firmware Update) Patch</a><time datetime="2025-09-23T01:16:50.000Z" title="Created 2025-09-23 09:16:50">2025-09-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/06/07/FakeSecureBoot%E2%80%94%E2%80%94%E4%B8%80%E7%A7%8D%E7%AE%80%E5%8D%95%E7%9A%84UEFI-Hook/" title="FakeSecureBoot——一种简单的UEFI Hook">FakeSecureBoot——一种简单的UEFI Hook</a><time datetime="2025-06-07T10:26:33.000Z" title="Created 2025-06-07 18:26:33">2025-06-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Ivy</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
